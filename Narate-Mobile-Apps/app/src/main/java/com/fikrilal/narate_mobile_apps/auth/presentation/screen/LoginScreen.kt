@@ -1,6 +1,8 @@
 package com.fikrilal.narate_mobile_apps.auth.presentation.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,14 +18,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fikrilal.narate_mobile_apps.R
 import com.fikrilal.narate_mobile_apps._core.presentation.component.button.CustomButton
@@ -35,12 +41,36 @@ import com.fikrilal.narate_mobile_apps._core.presentation.component.typography.H
 import com.fikrilal.narate_mobile_apps._core.presentation.component.typography.HeadingSmall
 import com.fikrilal.narate_mobile_apps._core.presentation.theme.AppColors
 import com.fikrilal.narate_mobile_apps._core.presentation.theme.TextColors
+import com.fikrilal.narate_mobile_apps.auth.presentation.viewmodel.AuthResult
+import com.fikrilal.narate_mobile_apps.auth.presentation.viewmodel.LoginViewModel
+import kotlinx.coroutines.launch
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltViewModel()) {
 
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     val emailState = remember { mutableStateOf("") }
     val passwordState = remember { mutableStateOf("") }
+
+    LaunchedEffect(viewModel.loginState) {
+        viewModel.loginState.collect { result ->
+            when (result) {
+                is AuthResult.Loading -> {
+                    // Show loading indicator
+                }
+                is AuthResult.Success -> {
+                    // Navigate to home screen
+                    navController.navigate("HomeScreen")
+                }
+                is AuthResult.Error -> {
+                    // Show error message
+                    Toast.makeText(context, "Login failed: ${result.exception.message}", Toast.LENGTH_LONG).show()
+                }
+                else -> { /* No-op */ }
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -83,7 +113,16 @@ fun LoginScreen(navController: NavController) {
         )
         Spacer(modifier = Modifier.heightIn(16.dp))
         Spacer(modifier = Modifier.heightIn(40.dp))
-        CustomButton(text = "Masuk", onClick = { /*TODO*/ })
+        CustomButton(text = "Masuk", onClick = {
+            if (emailState.value.isBlank() || passwordState.value.isBlank()) {
+                Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                return@CustomButton
+            }
+            // Call login logic
+            scope.launch {
+                viewModel.login(emailState.value, passwordState.value)
+            }
+        })
         Spacer(modifier = Modifier.weight(2f))
         Box(
             modifier = Modifier
@@ -103,7 +142,8 @@ fun LoginScreen(navController: NavController) {
                     text = "Daftar",
                     color = AppColors.linkColor,
                     textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.clickable { navController.navigate("RegisterScreen") }
                 )
             }
         }

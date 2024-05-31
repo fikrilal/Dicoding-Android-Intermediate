@@ -15,23 +15,23 @@ class RegisterViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    private val _registerState = MutableLiveData<Result<RegisterResponse>>()
-    val registerState: LiveData<Result<RegisterResponse>> = _registerState
+    private val _registerState = MutableLiveData<AuthResult<RegisterResponse>>()
+    val registerState: LiveData<AuthResult<RegisterResponse>> = _registerState
     fun register(name: String, email: String, password: String) {
         viewModelScope.launch {
-            _registerState.value = Result.Loading
+            _registerState.value = AuthResult.Loading
             try {
                 val response = authRepository.register(name, email, password)
-                _registerState.value = Result.Success(response)
+                _registerState.value = AuthResult.Success(response)
             } catch (e: Exception) {
-                _registerState.value = Result.Error(e)
+                _registerState.value = AuthResult.Error(e)
             }
         }
     }
 }
 
 sealed class Result<out T> {
-    object Loading : Result<Nothing>()
-    data class Success<out T>(val data: T) : Result<T>()
-    data class Error(val exception: Exception) : Result<Nothing>()
+    object Loading : AuthResult<Nothing>()
+    data class Success<out T>(val data: T) : AuthResult<T>()
+    data class Error(val exception: Exception) : AuthResult<Nothing>()
 }

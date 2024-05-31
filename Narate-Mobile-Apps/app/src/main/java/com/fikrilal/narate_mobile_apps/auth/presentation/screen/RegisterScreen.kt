@@ -40,7 +40,7 @@ import com.fikrilal.narate_mobile_apps._core.presentation.component.typography.H
 import com.fikrilal.narate_mobile_apps._core.presentation.theme.AppColors
 import com.fikrilal.narate_mobile_apps._core.presentation.theme.TextColors
 import com.fikrilal.narate_mobile_apps.auth.presentation.viewmodel.RegisterViewModel
-import com.fikrilal.narate_mobile_apps.auth.presentation.viewmodel.Result
+import com.fikrilal.narate_mobile_apps.auth.presentation.viewmodel.AuthResult
 import kotlinx.coroutines.launch
 
 @Composable
@@ -55,20 +55,21 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
     LaunchedEffect(viewModel.registerState) {
         viewModel.registerState.observeForever { result ->
             when (result) {
-                is Result.Loading -> {
+                is AuthResult.Loading -> {
                     // Show loading indicator
                     Log.d("RegisterState", "Loading")
                 }
-                is Result.Success -> {
+                is AuthResult.Success -> {
                     // Navigate to success screen
                     Log.d("RegisterState", "Success")
                     navController.navigate("HomeScreen")
                 }
-                is Result.Error -> {
+                is AuthResult.Error -> {
                     // Show error message
                     Log.e("RegisterState", "Error: ${result.exception.message}")
                     Toast.makeText(context, "Registration failed: ${result.exception.message}", Toast.LENGTH_LONG).show()
                 }
+                else -> { /* No-op */ }
             }
         }
     }
@@ -164,10 +165,10 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
             Spacer(Modifier.widthIn(5.dp))
             BodyMedium(
                 text = "Login",
-                modifier = Modifier.clickable { navController.navigate("login") },
+                modifier = Modifier.clickable { navController.navigate("LoginScreen") },
                 color = AppColors.linkColor,
                 textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             )
         }
     }
