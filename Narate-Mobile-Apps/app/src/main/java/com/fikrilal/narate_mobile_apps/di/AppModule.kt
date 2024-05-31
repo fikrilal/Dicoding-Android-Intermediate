@@ -4,6 +4,7 @@ import android.content.Context
 import com.fikrilal.narate_mobile_apps.BuildConfig
 import com.fikrilal.narate_mobile_apps._core.data.api.ApiServices
 import com.fikrilal.narate_mobile_apps._core.data.repository.auth.UserPreferences
+import com.fikrilal.narate_mobile_apps._core.data.repository.story.StoryRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,7 +47,7 @@ object AppModule {
     @Singleton
     fun provideRetrofit(client: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(BuildConfig.API_URL) // Ensure this is the correct package path
+            .baseUrl(BuildConfig.API_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -56,5 +57,11 @@ object AppModule {
     @Singleton
     fun provideApiService(retrofit: Retrofit): ApiServices {
         return retrofit.create(ApiServices::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideStoryRepository(apiServices: ApiServices, userPreferences: UserPreferences): StoryRepository {
+        return StoryRepository(apiServices, userPreferences)
     }
 }

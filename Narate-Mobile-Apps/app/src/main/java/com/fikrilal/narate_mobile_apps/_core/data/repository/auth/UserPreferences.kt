@@ -1,6 +1,7 @@
 package com.fikrilal.narate_mobile_apps._core.data.repository.auth
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
@@ -16,9 +17,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import java.io.IOException
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class UserPreferences @Inject constructor(private val context: Context) {
 
     companion object {
@@ -50,14 +49,18 @@ class UserPreferences @Inject constructor(private val context: Context) {
             .stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.WhileSubscribed(5000), null)
     }
 
+    suspend fun getUserToken(): String? {
+        val token = getUserPreference(USER_TOKEN)
+        Log.d("UserPreferences", "Retrieved token: $token")
+        return token
+    }
+
+    suspend fun getUserLanguage(): String? = getUserPreference(USER_LANGUAGE)
+
     private suspend fun <T> getUserPreference(key: Preferences.Key<T>): T? {
         val preferences = context.dataStore.data.first()
         return preferences[key]
     }
-
-    suspend fun getUserToken(): String? = getUserPreference(USER_TOKEN)
-
-    suspend fun getUserLanguage(): String? = getUserPreference(USER_LANGUAGE)
 
     suspend fun saveUserLanguage(language: String) {
         savePreference(USER_LANGUAGE, language)
@@ -68,18 +71,21 @@ class UserPreferences @Inject constructor(private val context: Context) {
             preferences[USER_TOKEN] = token
             preferences[USER_ID] = userId
             preferences[USER_NAME] = userName
+            Log.d("UserPreferences", "Saved user details: Token = $token, UserId = $userId, UserName = $userName")
         }
     }
 
     suspend fun clearUserDetails() {
         context.dataStore.edit { preferences ->
             preferences.clear()
+            Log.d("UserPreferences", "Cleared user details")
         }
     }
 
     private suspend fun <T> savePreference(key: Preferences.Key<T>, value: T) {
         context.dataStore.edit { preferences ->
             preferences[key] = value
+            Log.d("UserPreferences", "Saved preference for key: $key, value: $value")
         }
     }
 }

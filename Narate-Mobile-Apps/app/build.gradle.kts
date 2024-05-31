@@ -68,6 +68,7 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.room.common)
+    implementation(libs.androidx.media3.common)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -79,6 +80,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.1")
     implementation("com.google.dagger:hilt-android:2.48")
     kapt("com.google.dagger:hilt-android-compiler:2.48")
+    implementation("io.coil-kt:coil-compose:2.6.0")
 }
 kapt {
     correctErrorTypes = true

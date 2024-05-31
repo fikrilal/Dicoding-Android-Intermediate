@@ -1,5 +1,6 @@
 package com.fikrilal.narate_mobile_apps.auth.presentation.screen
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -58,13 +59,14 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
             when (result) {
                 is AuthResult.Loading -> {
                     // Show loading indicator
+                    Log.d("LoginScreen", "Loading: Attempting to log in.")
                 }
                 is AuthResult.Success -> {
-                    // Navigate to home screen
+                    Log.d("LoginScreen", "Success: Logged in successfully.")
                     navController.navigate("HomeScreen")
                 }
                 is AuthResult.Error -> {
-                    // Show error message
+                    Log.e("LoginScreen", "Error: Login failed with message - ${result.exception.message}")
                     Toast.makeText(context, "Login failed: ${result.exception.message}", Toast.LENGTH_LONG).show()
                 }
                 else -> { /* No-op */ }
@@ -116,11 +118,12 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = hiltVi
         CustomButton(text = "Masuk", onClick = {
             if (emailState.value.isBlank() || passwordState.value.isBlank()) {
                 Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
-                return@CustomButton
-            }
-            // Call login logic
-            scope.launch {
-                viewModel.login(emailState.value, passwordState.value)
+            } else {
+                // Call login logic
+                scope.launch {
+                    Log.d("LoginScreen", "Attempting to log in with email: ${emailState.value}")
+                    viewModel.login(emailState.value, passwordState.value)
+                }
             }
         })
         Spacer(modifier = Modifier.weight(2f))
