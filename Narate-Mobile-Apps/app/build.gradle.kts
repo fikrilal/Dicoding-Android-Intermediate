@@ -8,6 +8,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
+        buildConfigField("String","API_URL","\"https://story-api.dicoding.dev/v1/\"")
         applicationId = "com.fikrilal.narate_mobile_apps"
         minSdk = 24
         targetSdk = 34
@@ -38,6 +39,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -50,6 +52,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.datastore.preferences)
     implementation (libs.retrofit)
     implementation (libs.converter.gson)
     implementation(libs.androidx.core.ktx)
@@ -62,6 +65,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.room.common)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
