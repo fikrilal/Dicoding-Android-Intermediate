@@ -60,11 +60,11 @@ fun CustomOutlinedTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     textFieldColors: TextFieldColors = OutlinedTextFieldDefaults.colors(
-        unfocusedContainerColor = BrandColors.brandPrimary50,
-        focusedContainerColor = BrandColors.brandPrimary100,
-        focusedBorderColor = BrandColors.brandPrimary600,
+        unfocusedContainerColor = BrandColors.brandPrimary50.copy(alpha = 0.5f),
+        focusedContainerColor = BrandColors.brandPrimary50,
+        focusedBorderColor = BrandColors.brandPrimary400,
         unfocusedBorderColor = BrandColors.brandPrimary200,
-        cursorColor = BrandColors.brandPrimary600,
+        cursorColor = BrandColors.brandPrimary400,
         focusedTextColor = TextColors.grey700,
         unfocusedTextColor = TextColors.grey700
     ),
@@ -124,22 +124,22 @@ fun CustomPasswordTextField(
     isSingleLine: Boolean = true,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     textFieldColors: TextFieldColors = OutlinedTextFieldDefaults.colors(
-        unfocusedContainerColor = BrandColors.brandPrimary50,
-        focusedContainerColor = BrandColors.brandPrimary100,
-        focusedBorderColor = BrandColors.brandPrimary600,
+        unfocusedContainerColor = BrandColors.brandPrimary50.copy(alpha = 0.5f),
+        focusedContainerColor = BrandColors.brandPrimary50,
+        focusedBorderColor = BrandColors.brandPrimary400,
         unfocusedBorderColor = BrandColors.brandPrimary200,
-        cursorColor = BrandColors.brandPrimary600,
+        cursorColor = BrandColors.brandPrimary400,
         focusedTextColor = TextColors.grey700,
         unfocusedTextColor = TextColors.grey700
     ),
     shape: Shape = AppShapes.largeCorners,
-    onInteraction: () -> Unit = {}  // Callback for interaction
+    onInteraction: () -> Unit = {}
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
     var hasInteracted by remember { mutableStateOf(false) }
 
     Column(horizontalAlignment = Alignment.Start) {
-        if (!label.isNullOrEmpty()) {  // Cek jika label tidak null dan tidak kosong
+        if (!label.isNullOrEmpty()) {
             LabelLarge(text = label, fontWeight = FontWeight.Normal)
             Spacer(modifier = Modifier.height(8.dp))
         }
@@ -147,7 +147,7 @@ fun CustomPasswordTextField(
             value = value,
             onValueChange = {
                 onValueChange(it)
-                hasInteracted = true  // Set has interacted when the user types
+                hasInteracted = true
             },
             leadingIcon = iconId?.let {
                 {
