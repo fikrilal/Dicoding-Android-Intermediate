@@ -15,8 +15,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class UserPreferences(private val context: Context) {
+@Singleton
+class UserPreferences @Inject constructor(private val context: Context) {
 
     companion object {
         private val Context.dataStore by preferencesDataStore(name = "user_preferences")
@@ -47,14 +50,14 @@ class UserPreferences(private val context: Context) {
             .stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.WhileSubscribed(5000), null)
     }
 
-    suspend fun getUserToken(): String? = getUserPreference(USER_TOKEN)
-
-    suspend fun getUserLanguage(): String? = getUserPreference(USER_LANGUAGE)
-
     private suspend fun <T> getUserPreference(key: Preferences.Key<T>): T? {
         val preferences = context.dataStore.data.first()
         return preferences[key]
     }
+
+    suspend fun getUserToken(): String? = getUserPreference(USER_TOKEN)
+
+    suspend fun getUserLanguage(): String? = getUserPreference(USER_LANGUAGE)
 
     suspend fun saveUserLanguage(language: String) {
         savePreference(USER_LANGUAGE, language)

@@ -1,5 +1,6 @@
 package com.fikrilal.narate_mobile_apps.auth.presentation.screen
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -17,16 +18,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fikrilal.narate_mobile_apps.R
 import com.fikrilal.narate_mobile_apps._core.presentation.component.button.CustomButton
@@ -35,27 +37,47 @@ import com.fikrilal.narate_mobile_apps._core.presentation.component.textfields.C
 import com.fikrilal.narate_mobile_apps._core.presentation.component.typography.BodyLarge
 import com.fikrilal.narate_mobile_apps._core.presentation.component.typography.BodyMedium
 import com.fikrilal.narate_mobile_apps._core.presentation.component.typography.HeadingLarge
-import com.fikrilal.narate_mobile_apps._core.presentation.component.typography.HeadingSmall
 import com.fikrilal.narate_mobile_apps._core.presentation.theme.AppColors
 import com.fikrilal.narate_mobile_apps._core.presentation.theme.TextColors
+import com.fikrilal.narate_mobile_apps.auth.presentation.viewmodel.RegisterViewModel
+import com.fikrilal.narate_mobile_apps.auth.presentation.viewmodel.Result
 import kotlinx.coroutines.launch
 
 @Composable
-fun RegisterScreen(navController: NavController) {
-
-    val namaState = remember { mutableStateOf("") }
+fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = hiltViewModel()) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val nameState = remember { mutableStateOf("") }
     val emailState = remember { mutableStateOf("") }
     val passwordState = remember { mutableStateOf("") }
     val passwordRepeatState = remember { mutableStateOf("") }
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(viewModel.registerState) {
+        viewModel.registerState.observeForever { result ->
+            when (result) {
+                is Result.Loading -> {
+                    // Show loading indicator
+                    Log.d("RegisterState", "Loading")
+                }
+                is Result.Success -> {
+                    // Navigate to success screen
+                    Log.d("RegisterState", "Success")
+                    navController.navigate("HomeScreen")
+                }
+                is Result.Error -> {
+                    // Show error message
+                    Log.e("RegisterState", "Error: ${result.exception.message}")
+                    Toast.makeText(context, "Registration failed: ${result.exception.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(WindowInsets.systemBars.asPaddingValues())
             .padding(horizontal = 20.dp, vertical = 20.dp)
-
     ) {
         Spacer(modifier = Modifier.heightIn(15.dp))
         Image(
@@ -72,14 +94,13 @@ fun RegisterScreen(navController: NavController) {
             textAlign = TextAlign.Start,
             color = TextColors.grey600
         )
-
         Spacer(modifier = Modifier.heightIn(24.dp))
         CustomOutlinedTextField(
-            value = namaState.value,
-            onValueChange = { namaState.value = it },
+            value = nameState.value,
+            onValueChange = { nameState.value = it },
             label = "Nama Lengkap",
             iconId = R.drawable.ic_profile_icon,
-            placeholderText = "Enter your name"
+            placeholderText = "Enter your email"
         )
         Spacer(modifier = Modifier.heightIn(16.dp))
         CustomOutlinedTextField(
@@ -106,8 +127,29 @@ fun RegisterScreen(navController: NavController) {
             placeholderText = "Enter your password"
         )
         Spacer(modifier = Modifier.heightIn(40.dp))
-        CustomButton(text = "Masuk", onClick = {
-
+        CustomButton(text = "Daftar", onClick = {
+            if (emailState.value.isBlank() || passwordState.value.isBlank() || passwordRepeatState.value.isBlank()) {
+                Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                return@CustomButton
+            }
+            if (passwordState.value != passwordRepeatState.value) {
+                Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                return@CustomButton
+            }
+            // Call registration logic
+            scope.launch {
+                try {
+                    viewModel.register(
+                        name = nameState.value,
+                        email = emailState.value,
+                        password = passwordState.value
+                    )
+                    // Navigate or show success message
+                    navController.navigate("SuccessRoute") // Update with your actual success route
+                } catch (e: Exception) {
+                    Toast.makeText(context, "Registration failed: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
         })
         Spacer(modifier = Modifier.weight(0.1f))
         Row(
@@ -122,7 +164,7 @@ fun RegisterScreen(navController: NavController) {
             Spacer(Modifier.widthIn(5.dp))
             BodyMedium(
                 text = "Login",
-                modifier = Modifier.clickable { },
+                modifier = Modifier.clickable { navController.navigate("login") },
                 color = AppColors.linkColor,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold

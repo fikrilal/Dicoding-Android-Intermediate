@@ -1,7 +1,13 @@
-package com.fikrilal.narate_mobile_apps._core.data.api
+package com.fikrilal.narate_mobile_apps.di
 
+import android.content.Context
+import com.fikrilal.narate_mobile_apps.BuildConfig
+import com.fikrilal.narate_mobile_apps._core.data.api.ApiServices
+import com.fikrilal.narate_mobile_apps._core.data.repository.auth.UserPreferences
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -11,8 +17,15 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object NetworkServices {
+object AppModule {
 
+    @Provides
+    @Singleton
+    fun provideUserPreferences(@ApplicationContext context: Context): UserPreferences {
+        return UserPreferences(context)
+    }
+
+    @Provides
     @Singleton
     fun provideAuthInterceptor(): Interceptor {
         return Interceptor { chain ->
@@ -21,6 +34,7 @@ object NetworkServices {
         }
     }
 
+    @Provides
     @Singleton
     fun provideOkHttpClient(authInterceptor: Interceptor): OkHttpClient {
         return OkHttpClient.Builder()
@@ -28,15 +42,17 @@ object NetworkServices {
             .build()
     }
 
+    @Provides
     @Singleton
     fun provideRetrofit(client: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(com.fikrilal.narate_mobile_apps.BuildConfig.API_URL)
+            .baseUrl(BuildConfig.API_URL) // Ensure this is the correct package path
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
 
+    @Provides
     @Singleton
     fun provideApiService(retrofit: Retrofit): ApiServices {
         return retrofit.create(ApiServices::class.java)
