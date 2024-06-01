@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fikrilal.narate_mobile_apps._core.data.model.stories.StoryDetailResponse
 import com.fikrilal.narate_mobile_apps._core.data.repository.story.StoryRepository
+import com.fikrilal.narate_mobile_apps.story.data.utils.CompressImageUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
@@ -60,7 +61,13 @@ class StoryViewModel @Inject constructor(
                 val currentText = _text.value
 
                 if (currentImageUri != null && currentText != null) {
-                    val photoFile = uriToFile(currentImageUri, context)
+                    val bitmap = CompressImageUtils.uriToBitmap(context.contentResolver, currentImageUri)
+                    val resizedBitmap = CompressImageUtils.resizeBitmap(bitmap, 1024) // Misalnya, maksimal panjang sisi 1024 px
+                    val compressedImage = CompressImageUtils.compressBitmap(resizedBitmap, 80) // Misalnya, kualitas 80%
+
+                    // Mengubah ByteArray menjadi File sebelum mengunggah
+                    val photoFile = byteArrayToFile(context, compressedImage, "compressed_image.jpg")
+
                     val token = storyRepository.userPreferences.getUserToken()
                     token.let {
                         Log.d("StoryViewModel", "Using token for uploadStory: Bearer $it")
@@ -83,4 +90,12 @@ class StoryViewModel @Inject constructor(
             }
         }
     }
+
+    private fun byteArrayToFile(context: Context, imageData: ByteArray, fileName: String): File {
+        val file = File(context.cacheDir, fileName)
+        file.writeBytes(imageData)
+        return file
+    }
+
+
 }
