@@ -77,7 +77,7 @@ fun HomeScreen(
                     description = story.description,
                     imageUrl = story.photoUrl,
                     onCardClick = {
-                        navController.navigate("detailScreen/${story.id}")
+                        navController.navigate("storyDetailsScreen/${story.id}")
                     }
                 )
             }

@@ -3,6 +3,7 @@ package com.fikrilal.narate_mobile_apps._core.data.repository.story
 import android.util.Log
 import com.fikrilal.narate_mobile_apps._core.data.api.ApiServices
 import com.fikrilal.narate_mobile_apps._core.data.model.stories.StoriesResponse
+import com.fikrilal.narate_mobile_apps._core.data.model.stories.Story
 import com.fikrilal.narate_mobile_apps._core.data.model.stories.StoryDetailResponse
 import com.fikrilal.narate_mobile_apps._core.data.repository.auth.UserPreferences
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -85,18 +86,20 @@ class StoryRepository @Inject constructor(
         }
     }
 
-    suspend fun getStoryDetail(storyId: String): StoryDetailResponse {
-        val token = userPreferences.getUserToken()?.also {
-            Log.d("StoryRepository", "Retrieved token: $it")
-        } ?: throw Exception("Token is null or empty")
-
-        Log.d("StoryRepository", "Using token for getStoryDetail: $token")
+    suspend fun getStoryDetail(storyId: String): Story {
+        val token = userPreferences.getUserToken() ?: throw IllegalStateException("Token is null or empty")
         val response = apiServices.getStoryDetail(storyId, "Bearer $token")
-        Log.d("StoryRepository", "getStoryDetail response: ${response.isSuccessful}")
         if (response.isSuccessful) {
-            return response.body()!!
+            // Check for the 'error' field; if false, return the story, otherwise throw an error.
+            return response.body()?.let {
+                if (!it.error) {
+                    it.story
+                } else {
+                    throw Exception("Error from server: ${it.message}")
+                }
+            } ?: throw Exception("Response body is null")
         } else {
-            throw Exception("Error fetching story detail: ${response.message()}")
+            throw Exception("Network call failed with error: ${response.message()}")
         }
     }
 }
