@@ -35,4 +35,8 @@ class AuthRepository @Inject constructor(
             throw Exception("Login failed: ${response.errorBody()?.string()}")
         }
     }
+
+    suspend fun logout() {
+        userPreferences.clearUserDetails()
+    }
 }

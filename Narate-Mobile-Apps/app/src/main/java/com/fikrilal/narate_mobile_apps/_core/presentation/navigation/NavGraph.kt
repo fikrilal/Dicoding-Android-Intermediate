@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import com.fikrilal.narate_mobile_apps.auth.presentation.screen.LoginScreen
 import com.fikrilal.narate_mobile_apps.auth.presentation.screen.RegisterScreen
 import com.fikrilal.narate_mobile_apps.homepage.presentation.screen.HomeScreen
+import com.fikrilal.narate_mobile_apps.story.presentation.screen.AddNewStory
 
 @Composable
 fun Navigation(navController: NavHostController, startDestination: String) {
@@ -17,5 +18,6 @@ fun Navigation(navController: NavHostController, startDestination: String) {
         composable("loginScreen") { LoginScreen(navController) }
         composable("registerScreen") { RegisterScreen(navController) }
         composable("homeScreen") { HomeScreen(navController) }
+        composable("addNewStoryScreen") {AddNewStory(navController)}
     }
 }
