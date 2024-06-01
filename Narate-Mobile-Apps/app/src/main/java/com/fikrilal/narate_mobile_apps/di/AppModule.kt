@@ -64,4 +64,10 @@ object AppModule {
     fun provideStoryRepository(apiServices: ApiServices, userPreferences: UserPreferences): StoryRepository {
         return StoryRepository(apiServices, userPreferences)
     }
+
+    @Provides
+    @Singleton
+    fun provideContext(@ApplicationContext context: Context): Context {
+        return context
+    }
 }

@@ -4,8 +4,9 @@ import com.fikrilal.narate_mobile_apps._core.data.model.auth.RegisterResponse
 import com.fikrilal.narate_mobile_apps._core.data.model.auth.ResponseLogin
 import com.fikrilal.narate_mobile_apps._core.data.model.stories.StoriesResponse
 import com.fikrilal.narate_mobile_apps._core.data.model.stories.StoryDetailResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
-import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -23,7 +24,7 @@ interface ApiServices {
         @Field("name") name: String,
         @Field("email") userEmail: String,
         @Field("password") userPassword: String
-    ):  Response<RegisterResponse>
+    ): Response<RegisterResponse>
 
     @POST("login")
     @FormUrlEncoded
@@ -35,10 +36,10 @@ interface ApiServices {
     @POST("stories")
     @Multipart
     suspend fun addNewStory(
-        @Part("description") description: String,
-        @Part("photo") photo: String,
-        @Part("lat") lat: Double?,
-        @Part("lon") lon: Double?,
+        @Part("description") description: RequestBody,
+        @Part photo: MultipartBody.Part,
+        @Part("lat") lat: RequestBody?,
+        @Part("lon") lon: RequestBody?,
         @Header("Authorization") authorization: String
     ): Response<StoryDetailResponse>
 

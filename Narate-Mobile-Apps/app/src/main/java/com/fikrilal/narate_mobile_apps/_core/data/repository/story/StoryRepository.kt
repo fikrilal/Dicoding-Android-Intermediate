@@ -5,28 +5,51 @@ import com.fikrilal.narate_mobile_apps._core.data.api.ApiServices
 import com.fikrilal.narate_mobile_apps._core.data.model.stories.StoriesResponse
 import com.fikrilal.narate_mobile_apps._core.data.model.stories.StoryDetailResponse
 import com.fikrilal.narate_mobile_apps._core.data.repository.auth.UserPreferences
-import kotlinx.coroutines.flow.first
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 import javax.inject.Inject
 
 class StoryRepository @Inject constructor(
     private val apiServices: ApiServices,
-    private val userPreferences: UserPreferences
+    val userPreferences: UserPreferences
 ) {
     suspend fun addNewStory(
         description: String,
-        photo: String,
+        photo: File,
         lat: Double?,
         lon: Double?,
         token: String
     ): StoryDetailResponse {
-        val response = apiServices.addNewStory(description, photo, lat, lon, "Bearer $token")
+        val descriptionRequestBody = description.toRequestBody("text/plain".toMediaTypeOrNull())
+        val photoRequestBody = photo.asRequestBody("image/*".toMediaTypeOrNull())
+        val photoPart = MultipartBody.Part.createFormData("photo", photo.name, photoRequestBody)
+
+        val latRequestBody = lat?.toString()?.toRequestBody("text/plain".toMediaTypeOrNull())
+        val lonRequestBody = lon?.toString()?.toRequestBody("text/plain".toMediaTypeOrNull())
+
+        Log.d("StoryRepository", "Using token for addNewStory: $token")
+
+        val response = apiServices.addNewStory(
+            description = descriptionRequestBody,
+            photo = photoPart,
+            lat = latRequestBody,
+            lon = lonRequestBody,
+            authorization = token
+        )
+
         Log.d("StoryRepository", "addNewStory response: ${response.isSuccessful}")
         if (response.isSuccessful) {
             return response.body()!!
         } else {
-            throw Exception(response.message())
+            val errorBody = response.errorBody()?.string()
+            Log.e("StoryRepository", "Error adding new story: $errorBody")
+            throw Exception("Error adding new story: $errorBody")
         }
     }
+
 
     suspend fun addNewStoryGuest(
         description: String,
