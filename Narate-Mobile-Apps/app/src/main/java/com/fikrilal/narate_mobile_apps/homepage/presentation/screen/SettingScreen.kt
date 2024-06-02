@@ -15,16 +15,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -32,26 +29,33 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fikrilal.narate_mobile_apps.R
-import com.fikrilal.narate_mobile_apps._core.presentation.component.appBar.CustomAppBarWithLogo
 import com.fikrilal.narate_mobile_apps._core.presentation.component.typography.BodyLarge
 import com.fikrilal.narate_mobile_apps._core.presentation.component.typography.LabelLarge
 import com.fikrilal.narate_mobile_apps._core.presentation.theme.AppColors
 import com.fikrilal.narate_mobile_apps._core.presentation.theme.BrandColors
 import com.fikrilal.narate_mobile_apps._core.presentation.theme.TextColors
-import com.fikrilal.narate_mobile_apps.auth.presentation.component.CardStoryComponent
+import com.fikrilal.narate_mobile_apps.homepage.presentation.viewmodel.HomeViewModel
+import com.fikrilal.narate_mobile_apps.story.presentation.component.AppBarStoryDetail
+import kotlinx.coroutines.launch
 
 @Composable
 fun SettingScreen(
-    navController: NavController,
+    navController: NavController, viewModel: HomeViewModel = hiltViewModel()
 ) {
+    val scope = rememberCoroutineScope()
+
     Scaffold(
         containerColor = Color.White,
         topBar = {
-            CustomAppBarWithLogo(onClick = {
-
-            })
+            AppBarStoryDetail(
+                text = "Pengaturan",
+                onClick = {
+                    navController.navigateUp()
+                }
+            )
         },
     ) { innerPadding ->
         Column(
@@ -94,7 +98,16 @@ fun SettingScreen(
                 }
             }
             OutlinedButton(
-                onClick = {},
+                onClick = {
+                    scope.launch {
+                        viewModel.logout()
+                        navController.navigate("loginScreen") {
+                            popUpTo(navController.graph.startDestinationId) {
+                                inclusive = true
+                            }
+                        }
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),

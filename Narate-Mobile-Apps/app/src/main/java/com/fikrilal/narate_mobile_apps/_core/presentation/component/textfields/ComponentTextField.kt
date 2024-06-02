@@ -57,7 +57,7 @@ fun CustomOutlinedTextField(
     ),
     isSingleLine: Boolean = true,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     textFieldColors: TextFieldColors = OutlinedTextFieldDefaults.colors(
         unfocusedContainerColor = BrandColors.brandPrimary50.copy(alpha = 0.5f),
@@ -66,22 +66,30 @@ fun CustomOutlinedTextField(
         unfocusedBorderColor = BrandColors.brandPrimary200,
         cursorColor = BrandColors.brandPrimary400,
         focusedTextColor = TextColors.grey700,
-        unfocusedTextColor = TextColors.grey700
+        unfocusedTextColor = TextColors.grey700,
+        errorBorderColor = AppColors.errorColor,
+        errorLabelColor = AppColors.errorColor,
+        errorContainerColor = AppColors.errorColor.copy(alpha = 0.1f),
     ),
     shape: Shape = AppShapes.largeCorners,
+) {
+    var emailValid by remember { mutableStateOf(true) }
+    var hasInteracted by remember { mutableStateOf(false) }
 
-    ) {
+    val emailPattern = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$")
 
-    Column(
-        horizontalAlignment = Alignment.Start,
-    ) {
+    Column(horizontalAlignment = Alignment.Start) {
         if (!label.isNullOrEmpty()) {
             LabelLarge(text = label, fontWeight = FontWeight.Normal)
             Spacer(modifier = Modifier.height(8.dp))
         }
         OutlinedTextField(
             value = value,
-            onValueChange = onValueChange,
+            onValueChange = {
+                onValueChange(it)
+                hasInteracted = true
+                emailValid = emailPattern.matches(it)
+            },
             leadingIcon = iconId?.let {
                 {
                     Icon(
@@ -100,7 +108,14 @@ fun CustomOutlinedTextField(
             keyboardActions = keyboardActions,
             colors = textFieldColors,
             shape = shape,
+            isError = !emailValid && hasInteracted
         )
+        if (!emailValid && hasInteracted) {
+            Text(
+                "Email is not valid",
+                color = AppColors.errorColor
+            )
+        }
     }
 }
 
@@ -130,13 +145,18 @@ fun CustomPasswordTextField(
         unfocusedBorderColor = BrandColors.brandPrimary200,
         cursorColor = BrandColors.brandPrimary400,
         focusedTextColor = TextColors.grey700,
-        unfocusedTextColor = TextColors.grey700
+        unfocusedTextColor = TextColors.grey700,
+        errorBorderColor = AppColors.errorColor,
+        errorLabelColor = AppColors.errorColor,
+        errorContainerColor = AppColors.errorColor.copy(alpha = 0.1f),
     ),
     shape: Shape = AppShapes.largeCorners,
     onInteraction: () -> Unit = {}
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
     var hasInteracted by remember { mutableStateOf(false) }
+    val isPasswordValid = value.length >= passwordLengthRequirement
+    val showError = !isPasswordValid && hasInteracted
 
     Column(horizontalAlignment = Alignment.Start) {
         if (!label.isNullOrEmpty()) {
@@ -156,8 +176,6 @@ fun CustomPasswordTextField(
                         contentDescription = "$label Icon",
                         modifier = Modifier.size(iconSize),
                         tint = iconColor
-
-
                     )
                 }
             },
@@ -180,9 +198,10 @@ fun CustomPasswordTextField(
                         tint = iconColor
                     )
                 }
-            }
+            },
+            isError = showError
         )
-        if (hasInteracted && value.length < passwordLengthRequirement) {
+        if (showError) {
             Text(
                 "Password must be at least $passwordLengthRequirement characters",
                 color = AppColors.errorColor

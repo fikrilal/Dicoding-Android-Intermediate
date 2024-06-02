@@ -24,30 +24,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.fikrilal.narate_mobile_apps.R
+import com.fikrilal.narate_mobile_apps._core.presentation.component.typography.BodyLarge
 import com.fikrilal.narate_mobile_apps._core.presentation.theme.TextColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBarStoryDetail(
     onClick: () -> Unit,
+    text: String
 ) {
     Box {
         Column {
             TopAppBar(
                 modifier = Modifier.padding(start = 0.dp, end = 16.dp, top = 16.dp, bottom = 0.dp),
                 title = {
-                    Row (
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        Image(
-                            painter = painterResource(id = R.drawable.logo_narrate),
-                            contentDescription = "logo",
-                            modifier = Modifier.size(height = 28.dp, width = 100.dp)
-                        )
-                    }
+                    BodyLarge(text = text, color = TextColors.grey700)
                 },
                 navigationIcon = {
                     IconButton(onClick = onClick) {

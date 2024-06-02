@@ -57,8 +57,9 @@ fun StoryDetailsScreen(
         containerColor = Color.White,
         topBar = {
             AppBarStoryDetail(
+                text = "Detail Story",
                 onClick = {
-
+                    navController.navigateUp()
                 }
             )
         }

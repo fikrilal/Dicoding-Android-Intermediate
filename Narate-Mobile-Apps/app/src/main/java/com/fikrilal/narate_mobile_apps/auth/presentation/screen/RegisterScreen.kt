@@ -100,7 +100,7 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
             value = nameState.value,
             onValueChange = { nameState.value = it },
             label = "Nama Lengkap",
-            iconId = R.drawable.ic_profile_icon,
+            iconId = R.drawable.ic_profile,
             placeholderText = "Enter your email"
         )
         Spacer(modifier = Modifier.heightIn(16.dp))
