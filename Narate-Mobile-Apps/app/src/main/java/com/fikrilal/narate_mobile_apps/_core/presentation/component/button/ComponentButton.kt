@@ -29,7 +29,7 @@ fun CustomButton(
     onClick: () -> Unit,
     icon: ImageVector? = null,
     padding: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 14.dp),
-    shape: RoundedCornerShape = AppShapes.mediumCorners, // Default shape
+    shape: RoundedCornerShape = AppShapes.mediumCorners,
     modifier: Modifier = Modifier
 ) {
     Button(
@@ -44,8 +44,8 @@ fun CustomButton(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             icon?.let {
-                Icon(icon, contentDescription = "Button $text", tint = Color.Unspecified) // Assuming you pass a description if needed elsewhere
-                LabelMedium(text = " ", modifier = Modifier, color = Color.White) // Spacer hack
+                Icon(icon, contentDescription = "Button $text", tint = Color.Unspecified)
+                LabelMedium(text = " ", modifier = Modifier, color = Color.White)
             }
             LabelMedium(
                 text = text,
@@ -66,7 +66,7 @@ fun CustomButtonPreview() {
         CustomButton(
             text = "Click Me",
             onClick = {},
-            shape = AppShapes.largeCorners // Using large corners for preview
+            shape = AppShapes.largeCorners
         )
     }
 }

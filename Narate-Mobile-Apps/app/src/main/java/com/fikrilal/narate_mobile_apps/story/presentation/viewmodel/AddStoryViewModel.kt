@@ -62,12 +62,9 @@ class StoryViewModel @Inject constructor(
 
                 if (currentImageUri != null && currentText != null) {
                     val bitmap = CompressImageUtils.uriToBitmap(context.contentResolver, currentImageUri)
-                    val resizedBitmap = CompressImageUtils.resizeBitmap(bitmap, 1024) // Misalnya, maksimal panjang sisi 1024 px
-                    val compressedImage = CompressImageUtils.compressBitmap(resizedBitmap, 80) // Misalnya, kualitas 80%
-
-                    // Mengubah ByteArray menjadi File sebelum mengunggah
+                    val resizedBitmap = CompressImageUtils.resizeBitmap(bitmap, 1024)
+                    val compressedImage = CompressImageUtils.compressBitmap(resizedBitmap, 80)
                     val photoFile = byteArrayToFile(context, compressedImage, "compressed_image.jpg")
-
                     val token = storyRepository.userPreferences.getUserToken()
                     token.let {
                         Log.d("StoryViewModel", "Using token for uploadStory: Bearer $it")

@@ -1,15 +1,14 @@
 package com.fikrilal.narate_mobile_apps.story.presentation.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.fikrilal.narate_mobile_apps._core.data.model.stories.Story
-import com.fikrilal.narate_mobile_apps._core.data.model.stories.StoryDetailResponse
-import kotlinx.coroutines.launch
 import com.fikrilal.narate_mobile_apps._core.data.repository.story.StoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,7 +26,7 @@ class StoryDetailsViewModel @Inject constructor(
                 _storyDetail.postValue(story)
             } catch (e: Exception) {
                 _storyDetail.postValue(null)
-                Log.e("StoryDetailsViewModel", "Failed to fetch story details", e)
+//                Log.e("StoryDetailsViewModel", "Failed to fetch story details", e)
             }
         }
     }

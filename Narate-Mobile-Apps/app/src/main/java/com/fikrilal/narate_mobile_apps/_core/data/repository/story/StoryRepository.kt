@@ -27,11 +27,9 @@ class StoryRepository @Inject constructor(
         val descriptionRequestBody = description.toRequestBody("text/plain".toMediaTypeOrNull())
         val photoRequestBody = photo.asRequestBody("image/*".toMediaTypeOrNull())
         val photoPart = MultipartBody.Part.createFormData("photo", photo.name, photoRequestBody)
-
         val latRequestBody = lat?.toString()?.toRequestBody("text/plain".toMediaTypeOrNull())
         val lonRequestBody = lon?.toString()?.toRequestBody("text/plain".toMediaTypeOrNull())
-
-        Log.d("StoryRepository", "Using token for addNewStory: $token")
+//        Log.d("StoryRepository", "Using token for addNewStory: $token")
 
         val response = apiServices.addNewStory(
             description = descriptionRequestBody,
@@ -41,16 +39,15 @@ class StoryRepository @Inject constructor(
             authorization = token
         )
 
-        Log.d("StoryRepository", "addNewStory response: ${response.isSuccessful}")
+//        Log.d("StoryRepository", "addNewStory response: ${response.isSuccessful}")
         if (response.isSuccessful) {
             return response.body()!!
         } else {
             val errorBody = response.errorBody()?.string()
-            Log.e("StoryRepository", "Error adding new story: $errorBody")
+//            Log.e("StoryRepository", "Error adding new story: $errorBody")
             throw Exception("Error adding new story: $errorBody")
         }
     }
-
 
     suspend fun addNewStoryGuest(
         description: String,
@@ -59,7 +56,7 @@ class StoryRepository @Inject constructor(
         lon: Double?
     ): StoryDetailResponse {
         val response = apiServices.addNewStoryGuest(description, photo, lat, lon)
-        Log.d("StoryRepository", "addNewStoryGuest response: ${response.isSuccessful}")
+//        Log.d("StoryRepository", "addNewStoryGuest response: ${response.isSuccessful}")
         if (response.isSuccessful) {
             return response.body()!!
         } else {
@@ -73,12 +70,12 @@ class StoryRepository @Inject constructor(
         location: Int?
     ): StoriesResponse {
         val token = userPreferences.getUserToken()?.also {
-            Log.d("StoryRepository", "Retrieved token: $it")
+//            Log.d("StoryRepository", "Retrieved token: $it")
         } ?: throw Exception("Token is null or empty")
 
-        Log.d("StoryRepository", "Using token for getAllStories: $token")
+//        Log.d("StoryRepository", "Using token for getAllStories: $token")
         val response = apiServices.getAllStories(page, size, location, "Bearer $token")
-        Log.d("StoryRepository", "getAllStories response: ${response.isSuccessful}")
+//        Log.d("StoryRepository", "getAllStories response: ${response.isSuccessful}")
         if (response.isSuccessful) {
             return response.body()!!
         } else {
@@ -90,7 +87,6 @@ class StoryRepository @Inject constructor(
         val token = userPreferences.getUserToken() ?: throw IllegalStateException("Token is null or empty")
         val response = apiServices.getStoryDetail(storyId, "Bearer $token")
         if (response.isSuccessful) {
-            // Check for the 'error' field; if false, return the story, otherwise throw an error.
             return response.body()?.let {
                 if (!it.error) {
                     it.story

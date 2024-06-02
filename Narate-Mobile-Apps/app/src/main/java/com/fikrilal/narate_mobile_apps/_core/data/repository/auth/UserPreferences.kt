@@ -71,21 +71,21 @@ class UserPreferences @Inject constructor(private val context: Context) {
             preferences[USER_TOKEN] = token
             preferences[USER_ID] = userId
             preferences[USER_NAME] = userName
-            Log.d("UserPreferences", "Saved user details: Token = $token, UserId = $userId, UserName = $userName")
+//            Log.d("UserPreferences", "Saved user details: Token = $token, UserId = $userId, UserName = $userName")
         }
     }
 
     suspend fun clearUserDetails() {
         context.dataStore.edit { preferences ->
             preferences.clear()
-            Log.d("UserPreferences", "Cleared user details")
+//            Log.d("UserPreferences", "Cleared user details")
         }
     }
 
     private suspend fun <T> savePreference(key: Preferences.Key<T>, value: T) {
         context.dataStore.edit { preferences ->
             preferences[key] = value
-            Log.d("UserPreferences", "Saved preference for key: $key, value: $value")
+//            Log.d("UserPreferences", "Saved preference for key: $key, value: $value")
         }
     }
 }

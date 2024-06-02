@@ -1,6 +1,5 @@
 package com.fikrilal.narate_mobile_apps.story.presentation.screen
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,7 +36,6 @@ import com.fikrilal.narate_mobile_apps._core.presentation.component.typography.B
 import com.fikrilal.narate_mobile_apps._core.presentation.component.typography.BodyMedium
 import com.fikrilal.narate_mobile_apps._core.presentation.component.typography.LabelLarge
 import com.fikrilal.narate_mobile_apps._core.presentation.theme.TextColors
-import com.fikrilal.narate_mobile_apps.story.presentation.component.AppBarPostComponent
 import com.fikrilal.narate_mobile_apps.story.presentation.component.AppBarStoryDetail
 import com.fikrilal.narate_mobile_apps.story.presentation.viewmodel.StoryDetailsViewModel
 

@@ -30,9 +30,9 @@ class HomeViewModel @Inject constructor(
             try {
                 val response = storyRepository.getAllStories(null, null, null)
                 _stories.value = response.listStory
-                Log.d("HomeViewModel", "Fetched stories: ${response.listStory}")
+//                Log.d("HomeViewModel", "Fetched stories: ${response.listStory}")
             } catch (e: Exception) {
-                Log.e("HomeViewModel", "Error fetching stories", e)
+//                Log.e("HomeViewModel", "Error fetching stories", e)
             }
         }
     }
@@ -41,9 +41,9 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 authRepository.logout()
-                Log.d("HomeViewModel", "Logged out successfully")
+//                Log.d("HomeViewModel", "Logged out successfully")
             } catch (e: Exception) {
-                Log.e("HomeViewModel", "Error logging out", e)
+//                Log.e("HomeViewModel", "Error logging out", e)
             }
         }
     }

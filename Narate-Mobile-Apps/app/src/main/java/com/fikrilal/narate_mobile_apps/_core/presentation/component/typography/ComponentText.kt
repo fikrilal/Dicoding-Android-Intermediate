@@ -23,7 +23,7 @@ fun HeadingLarge(
     modifier: Modifier = Modifier,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
-    textAlign: androidx.compose.ui.text.style.TextAlign? = null  // Optional text alignment
+    textAlign: androidx.compose.ui.text.style.TextAlign? = null
 ) {
     Text(
         text = text,
@@ -50,7 +50,7 @@ fun HeadingMedium(
     modifier: Modifier = Modifier,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
-    textAlign: androidx.compose.ui.text.style.TextAlign? = null  // Optional text alignment
+    textAlign: androidx.compose.ui.text.style.TextAlign? = null
 ) {
     Text(
         text = text,
@@ -77,7 +77,7 @@ fun HeadingSmall(
     modifier: Modifier = Modifier,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
-    textAlign: androidx.compose.ui.text.style.TextAlign? = null  // Optional text alignment
+    textAlign: androidx.compose.ui.text.style.TextAlign? = null
 ) {
     Text(
         text = text,
@@ -104,7 +104,7 @@ fun TitleLarge(
     modifier: Modifier = Modifier,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
-    textAlign: androidx.compose.ui.text.style.TextAlign? = null  // Optional text alignment
+    textAlign: androidx.compose.ui.text.style.TextAlign? = null
 ) {
     Text(
         text = text,
@@ -131,7 +131,7 @@ fun TitleMedium(
     modifier: Modifier = Modifier,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
-    textAlign: androidx.compose.ui.text.style.TextAlign? = null  // Optional text alignment
+    textAlign: androidx.compose.ui.text.style.TextAlign? = null
 ) {
     Text(
         text = text,
@@ -158,7 +158,7 @@ fun TitleSmall(
     modifier: Modifier = Modifier,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
-    textAlign: androidx.compose.ui.text.style.TextAlign? = null  // Optional text alignment
+    textAlign: androidx.compose.ui.text.style.TextAlign? = null
 ) {
     Text(
         text = text,
@@ -185,7 +185,7 @@ fun LabelLarge(
     modifier: Modifier = Modifier,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
-    textAlign: androidx.compose.ui.text.style.TextAlign? = null  // Optional text alignment
+    textAlign: androidx.compose.ui.text.style.TextAlign? = null
 ) {
     Text(
         text = text,
@@ -212,7 +212,7 @@ fun LabelMedium(
     modifier: Modifier = Modifier,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
-    textAlign: androidx.compose.ui.text.style.TextAlign? = null  // Optional text alignment
+    textAlign: androidx.compose.ui.text.style.TextAlign? = null
 ) {
     Text(
         text = text,
@@ -239,7 +239,7 @@ fun LabelSmall(
     modifier: Modifier = Modifier,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
-    textAlign: androidx.compose.ui.text.style.TextAlign? = null  // Optional text alignment
+    textAlign: androidx.compose.ui.text.style.TextAlign? = null
 ) {
     Text(
         text = text,
@@ -266,7 +266,7 @@ fun BodyLarge(
     modifier: Modifier = Modifier,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
-    textAlign: androidx.compose.ui.text.style.TextAlign? = null  // Optional text alignment
+    textAlign: androidx.compose.ui.text.style.TextAlign? = null
 ) {
     Text(
         text = text,
@@ -294,7 +294,7 @@ fun BodyMedium(
     modifier: Modifier = Modifier,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
-    textAlign: androidx.compose.ui.text.style.TextAlign? = null  // Optional text alignment
+    textAlign: androidx.compose.ui.text.style.TextAlign? = null
 ) {
     Text(
         text = text,
@@ -321,7 +321,7 @@ fun BodySmall(
     modifier: Modifier = Modifier,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
-    textAlign: androidx.compose.ui.text.style.TextAlign? = null  // Optional text alignment
+    textAlign: androidx.compose.ui.text.style.TextAlign? = null
 ) {
     Text(
         text = text,

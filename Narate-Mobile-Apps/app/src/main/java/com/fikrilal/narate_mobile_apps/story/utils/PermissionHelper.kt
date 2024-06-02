@@ -32,7 +32,6 @@ class PermissionRequester(private val context: Context) {
             }
             permissionsLauncher.launch(permissions)
         } else {
-            // Tangani kasus di mana activity adalah null
             onPermissionResults(permissions.associateWith { false })
         }
     }

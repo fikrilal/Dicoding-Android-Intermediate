@@ -34,7 +34,6 @@ import com.fikrilal.narate_mobile_apps._core.presentation.component.appBar.Custo
 import com.fikrilal.narate_mobile_apps._core.presentation.theme.BrandColors
 import com.fikrilal.narate_mobile_apps.auth.presentation.component.CardStoryComponent
 import com.fikrilal.narate_mobile_apps.homepage.presentation.viewmodel.HomeViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(

@@ -4,7 +4,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,7 +18,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -41,7 +39,6 @@ import com.fikrilal.narate_mobile_apps._core.presentation.component.textfields.C
 import com.fikrilal.narate_mobile_apps._core.presentation.component.typography.BodyLarge
 import com.fikrilal.narate_mobile_apps._core.presentation.component.typography.BodyMedium
 import com.fikrilal.narate_mobile_apps._core.presentation.component.typography.HeadingLarge
-import com.fikrilal.narate_mobile_apps._core.presentation.component.typography.HeadingSmall
 import com.fikrilal.narate_mobile_apps._core.presentation.theme.AppColors
 import com.fikrilal.narate_mobile_apps._core.presentation.theme.BrandColors
 import com.fikrilal.narate_mobile_apps._core.presentation.theme.TextColors
