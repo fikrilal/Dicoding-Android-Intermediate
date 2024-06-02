@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import com.fikrilal.narate_mobile_apps.auth.presentation.screen.LoginScreen
 import com.fikrilal.narate_mobile_apps.auth.presentation.screen.RegisterScreen
 import com.fikrilal.narate_mobile_apps.homepage.presentation.screen.HomeScreen
+import com.fikrilal.narate_mobile_apps.homepage.presentation.screen.SettingScreen
 import com.fikrilal.narate_mobile_apps.story.presentation.screen.AddNewStory
 import com.fikrilal.narate_mobile_apps.story.presentation.screen.StoryDetailsScreen
 
@@ -35,6 +36,7 @@ fun Navigation(navController: NavHostController, startDestination: String) {
                 }
             }
         }
+        composable("settingScreen") {SettingScreen(navController)}
     }
 }
 

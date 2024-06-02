@@ -12,14 +12,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.FloatingActionButtonElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -29,6 +28,7 @@ import com.fikrilal.narate_mobile_apps._core.presentation.component.appBar.Custo
 import com.fikrilal.narate_mobile_apps._core.presentation.theme.BrandColors
 import com.fikrilal.narate_mobile_apps.auth.presentation.component.CardStoryComponent
 import com.fikrilal.narate_mobile_apps.homepage.presentation.viewmodel.HomeViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
@@ -36,13 +36,15 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val stories = viewModel.stories.collectAsState().value
-
+    val scope = rememberCoroutineScope()
     Log.d("HomeScreen", "Displaying stories: $stories")
 
     Scaffold(
         containerColor = Color.White,
         topBar = {
-            CustomAppBarWithLogo()
+            CustomAppBarWithLogo(onClick = {
+                navController.navigate("settingScreen")
+            })
         },
         floatingActionButton = {
             FloatingActionButton(

@@ -38,6 +38,7 @@ import com.fikrilal.narate_mobile_apps._core.presentation.component.typography.B
 import com.fikrilal.narate_mobile_apps._core.presentation.component.typography.LabelLarge
 import com.fikrilal.narate_mobile_apps._core.presentation.theme.TextColors
 import com.fikrilal.narate_mobile_apps.story.presentation.component.AppBarPostComponent
+import com.fikrilal.narate_mobile_apps.story.presentation.component.AppBarStoryDetail
 import com.fikrilal.narate_mobile_apps.story.presentation.viewmodel.StoryDetailsViewModel
 
 @Composable
@@ -55,7 +56,7 @@ fun StoryDetailsScreen(
     Scaffold(
         containerColor = Color.White,
         topBar = {
-            AppBarPostComponent(
+            AppBarStoryDetail(
                 onClick = {
 
                 }
