@@ -1,6 +1,9 @@
 package com.fikrilal.narate_mobile_apps.homepage.presentation.screen
 
 import android.util.Log
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,9 +19,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,6 +45,11 @@ fun HomeScreen(
     val scope = rememberCoroutineScope()
     Log.d("HomeScreen", "Displaying stories: $stories")
 
+    // ANIMASI AGAR FAB MEMBESAR KETIKA DITEKAN
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val scale by animateFloatAsState(if (isPressed) 1.2f else 1f)
+
     Scaffold(
         containerColor = Color.White,
         topBar = {
@@ -49,13 +60,19 @@ fun HomeScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { navController.navigate("addNewStoryScreen") },
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier
+                    .padding(16.dp)
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                    },
                 containerColor = BrandColors.brandPrimary500,
                 shape = CircleShape,
                 elevation = FloatingActionButtonDefaults.elevation(
                     defaultElevation = 2.dp,
                     pressedElevation = 4.dp
-                )
+                ),
+                interactionSource = interactionSource
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_quill_pen),

@@ -1,5 +1,6 @@
 package com.fikrilal.narate_mobile_apps._core.presentation.navigation
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -17,26 +18,32 @@ fun Navigation(navController: NavHostController, startDestination: String) {
         navController = navController,
         startDestination = startDestination
     ) {
-        composable("loginScreen") { LoginScreen(navController) }
-        composable("registerScreen") { RegisterScreen(navController) }
-        composable("homeScreen") { HomeScreen(navController) }
-        composable("addNewStoryScreen") { AddNewStory(navController) }
+        composable("loginScreen") { CrossfadeAnimation { LoginScreen(navController) } }
+        composable("registerScreen") { CrossfadeAnimation { RegisterScreen(navController) } }
+        composable("homeScreen") { CrossfadeAnimation { HomeScreen(navController) } }
+        composable("addNewStoryScreen") { CrossfadeAnimation { AddNewStory(navController) } }
         composable("storyDetailsScreen/{storyId}") { backStackEntry ->
-            // Extract the storyId from the backStackEntry
-            val storyId = backStackEntry.arguments?.getString("storyId")
-            if (storyId != null) {
-                StoryDetailsScreen(storyId = storyId, navController = navController)
-            } else {
-                // Optionally handle the error or redirect if the parameter is missing
-                // For simplicity here, just go back to home
-                navController.navigate("homeScreen") {
-                    popUpTo(navController.graph.startDestinationId) {
-                        inclusive = true
+            CrossfadeAnimation {
+                val storyId = backStackEntry.arguments?.getString("storyId")
+                if (storyId != null) {
+                    StoryDetailsScreen(storyId = storyId, navController = navController)
+                } else {
+                    navController.navigate("homeScreen") {
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = true
+                        }
                     }
                 }
             }
         }
-        composable("settingScreen") {SettingScreen(navController)}
+        composable("settingScreen") { CrossfadeAnimation { SettingScreen(navController) } }
     }
 }
 
+// ANIMASI UNTUK TRANSISI ANTAR PAGE
+@Composable
+fun CrossfadeAnimation(content: @Composable () -> Unit) {
+    Crossfade(targetState = content) { screenContent ->
+        screenContent()
+    }
+}

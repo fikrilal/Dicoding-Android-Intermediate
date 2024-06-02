@@ -72,6 +72,7 @@ fun CustomOutlinedTextField(
         errorContainerColor = AppColors.errorColor.copy(alpha = 0.1f),
     ),
     shape: Shape = AppShapes.largeCorners,
+    email: Boolean = false
 ) {
     var emailValid by remember { mutableStateOf(true) }
     var hasInteracted by remember { mutableStateOf(false) }
@@ -88,7 +89,9 @@ fun CustomOutlinedTextField(
             onValueChange = {
                 onValueChange(it)
                 hasInteracted = true
-                emailValid = emailPattern.matches(it)
+                if (email) {
+                    emailValid = emailPattern.matches(it)
+                }
             },
             leadingIcon = iconId?.let {
                 {
@@ -108,9 +111,9 @@ fun CustomOutlinedTextField(
             keyboardActions = keyboardActions,
             colors = textFieldColors,
             shape = shape,
-            isError = !emailValid && hasInteracted
+            isError = !emailValid && hasInteracted && email
         )
-        if (!emailValid && hasInteracted) {
+        if (!emailValid && hasInteracted && email) {
             Text(
                 "Email is not valid",
                 color = AppColors.errorColor

@@ -62,6 +62,7 @@ import com.fikrilal.narate_mobile_apps._core.presentation.component.typography.B
 import com.fikrilal.narate_mobile_apps._core.presentation.component.typography.LabelLarge
 import com.fikrilal.narate_mobile_apps._core.presentation.theme.TextColors
 import com.fikrilal.narate_mobile_apps._core.presentation.theme.dmSansFontFamily
+import com.fikrilal.narate_mobile_apps.story.data.utils.ImagePickerUtils
 import com.fikrilal.narate_mobile_apps.story.presentation.component.AppBarPostComponent
 import com.fikrilal.narate_mobile_apps.story.presentation.component.CustomOutlinedButton
 import com.fikrilal.narate_mobile_apps.story.presentation.viewmodel.StoryViewModel
@@ -81,26 +82,12 @@ fun AddNewStory(
     var tempImageUri by remember { mutableStateOf<Uri?>(null) }
     var textFieldValue by remember { mutableStateOf(TextFieldValue(text)) }
 
-    // Function to create a URI for storing the captured photo
-    fun createImageUri(context: Context): Uri? {
-        val contentValues = ContentValues().apply {
-            put(MediaStore.Images.Media.TITLE, "New Photo")
-            put(MediaStore.Images.Media.DESCRIPTION, "From the Camera")
-        }
-        return context.contentResolver.insert(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-            contentValues
-        )
-    }
-
-    // Launcher for picking image from gallery
     val pickImageLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         viewModel.setImageUri(uri)
     }
 
-    // Launcher for taking a photo
     val takePictureLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.TakePicture()
     ) { success: Boolean ->
@@ -110,13 +97,12 @@ fun AddNewStory(
         }
     }
 
-    // Prepare for asking permissions
     val requestPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         val allPermissionsGranted = permissions.values.all { it }
         if (allPermissionsGranted) {
-            tempImageUri = createImageUri(context)
+            tempImageUri = ImagePickerUtils.createImageUri(context)
             tempImageUri?.let { uri ->
                 takePictureLauncher.launch(uri)
             }
@@ -135,7 +121,7 @@ fun AddNewStory(
     ) { innerPadding ->
         if (isLoading == true) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator() // Menampilkan indikator loading
+                CircularProgressIndicator()
             }
         } else {
             Column(
@@ -145,7 +131,12 @@ fun AddNewStory(
                     .padding(WindowInsets.systemBars.asPaddingValues())
             ) {
                 Row(
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 10.dp)
+                    modifier = Modifier.padding(
+                        start = 16.dp,
+                        end = 16.dp,
+                        top = 16.dp,
+                        bottom = 10.dp
+                    )
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.sample_image),
@@ -241,15 +232,12 @@ fun AddNewStory(
     LaunchedEffect(uploadResult) {
         uploadResult?.let { result ->
             result.onSuccess {
-                // Navigasi ke HomeScreen atau tampilan berikutnya
                 navController.navigate("HomeScreen")
-                // Mungkin menampilkan Snackbar atau Toast di sini
                 Toast.makeText(context, "Berhasil mengunggah cerita", Toast.LENGTH_LONG).show()
             }.onFailure {
-                // Menangani kegagalan
-                Toast.makeText(context, "Gagal mengunggah cerita: ${it.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Gagal mengunggah cerita: ${it.message}", Toast.LENGTH_LONG)
+                    .show()
             }
         }
     }
-
 }

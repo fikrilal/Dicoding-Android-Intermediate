@@ -16,22 +16,29 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.fikrilal.narate_mobile_apps.R
+import com.fikrilal.narate_mobile_apps._core.presentation.component.button.CustomButton
 import com.fikrilal.narate_mobile_apps._core.presentation.component.typography.BodyLarge
 import com.fikrilal.narate_mobile_apps._core.presentation.component.typography.LabelLarge
 import com.fikrilal.narate_mobile_apps._core.presentation.theme.AppColors
@@ -46,6 +53,7 @@ fun SettingScreen(
     navController: NavController, viewModel: HomeViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
+    var showLogoutDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         containerColor = Color.White,
@@ -100,12 +108,7 @@ fun SettingScreen(
             OutlinedButton(
                 onClick = {
                     scope.launch {
-                        viewModel.logout()
-                        navController.navigate("loginScreen") {
-                            popUpTo(navController.graph.startDestinationId) {
-                                inclusive = true
-                            }
-                        }
+                        showLogoutDialog = true
                     }
                 },
                 modifier = Modifier
@@ -132,6 +135,30 @@ fun SettingScreen(
                     Spacer(modifier = Modifier.width(8.dp))
                     LabelLarge("Logout", color = AppColors.errorColor)
                 }
+            }
+            if (showLogoutDialog) {
+                AlertDialog(
+                    onDismissRequest = { showLogoutDialog = false },
+                    title = {
+                        BodyLarge(
+                            text = "Are you sure you want to logout?",
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    },
+                    text = { BodyLarge(text = "Lorem ipsum") },
+                    confirmButton = {
+                        CustomButton(text = "Confirm", onClick = {
+                            showLogoutDialog = false
+                            scope.launch {
+                                viewModel.logout()
+                                navController.navigate("loginScreen") {
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        inclusive = true
+                                    }
+                                }
+                            }
+                        })
+                    })
             }
         }
     }
