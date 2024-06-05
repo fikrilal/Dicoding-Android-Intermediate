@@ -1,11 +1,15 @@
 package com.fikrilal.narate_mobile_apps._core.data.repository.story
 
 import android.util.Log
+import androidx.paging.PagingSource
 import com.fikrilal.narate_mobile_apps._core.data.api.ApiServices
 import com.fikrilal.narate_mobile_apps._core.data.model.stories.StoriesResponse
 import com.fikrilal.narate_mobile_apps._core.data.model.stories.Story
 import com.fikrilal.narate_mobile_apps._core.data.model.stories.StoryDetailResponse
 import com.fikrilal.narate_mobile_apps._core.data.repository.auth.UserPreferences
+import com.fikrilal.narate_mobile_apps.homepage.data.sources.StoryPagingSource
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -17,6 +21,13 @@ class StoryRepository @Inject constructor(
     private val apiServices: ApiServices,
     val userPreferences: UserPreferences
 ) {
+
+    fun provideStoriesPagingSource(location: Int): PagingSource<Int, Story> {
+        val tokenFlow = userPreferences.userToken
+        val token = runBlocking { tokenFlow.first() ?: throw IllegalStateException("Token is null or empty") }
+        return StoryPagingSource(apiServices, token, location)
+    }
+
     suspend fun addNewStory(
         description: String,
         photo: File,

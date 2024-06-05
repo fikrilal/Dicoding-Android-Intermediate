@@ -10,13 +10,39 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.fikrilal.narate_mobile_apps._core.data.api.ApiServices
+import com.fikrilal.narate_mobile_apps._core.data.repository.auth.UserPreferences
+import com.fikrilal.narate_mobile_apps.homepage.data.sources.StoryPagingSource
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val storyRepository: StoryRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val apiServices: ApiServices,
+    val userPreferences: UserPreferences
 ) : ViewModel() {
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val allStories: Flow<PagingData<Story>> = userPreferences.userToken
+        .filterNotNull()
+        .flatMapLatest { token ->
+            Pager(
+                PagingConfig(pageSize = 20)
+            ) {
+                StoryPagingSource(apiServices, token, 0)
+            }.flow
+        }.cachedIn(viewModelScope)
+
+
 
     private val _stories = MutableStateFlow<List<Story>>(emptyList())
     val stories: StateFlow<List<Story>> get() = _stories

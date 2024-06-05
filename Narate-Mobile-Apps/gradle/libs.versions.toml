@@ -22,6 +22,8 @@ composeBom = "2023.08.00"
 material = "x.x.x"
 navigationRuntimeKtx = "2.7.7"
 navigationCompose = "2.7.7"
+pagingCompose = "3.3.0"
+pagingComposeVersion = "1.0.0-alpha14"
 playServicesMaps = "18.2.0"
 retrofit = "2.9.0"
 roomCommon = "2.6.1"
@@ -39,6 +41,9 @@ androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-material = { module = "androidx.compose.material:material", version.ref = "material" }
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingCompose" }
+androidx-paging-compose-v100alpha14 = { module = "androidx.paging:paging-compose", version.ref = "pagingComposeVersion" }
+androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "pagingCompose" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroidGradlePlugin" }

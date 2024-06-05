@@ -88,6 +88,8 @@ dependencies {
     implementation (libs.ui)
     implementation (libs.ui.tooling)
     implementation (libs.androidx.material)
+    implementation ("androidx.paging:paging-compose:1.0.0-alpha14")
+
 }
 kapt {
     correctErrorTypes = true

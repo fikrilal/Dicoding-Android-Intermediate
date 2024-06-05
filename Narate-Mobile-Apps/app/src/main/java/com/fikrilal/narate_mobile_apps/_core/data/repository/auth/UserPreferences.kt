@@ -49,6 +49,12 @@ class UserPreferences @Inject constructor(private val context: Context) {
             .stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.WhileSubscribed(5000), null)
     }
 
+    val userTokenState = userToken.stateIn(
+        scope = CoroutineScope(Dispatchers.IO),
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = null
+    )
+
     suspend fun getUserToken(): String? {
         val token = getUserPreference(USER_TOKEN)
         Log.d("UserPreferences", "Retrieved token: $token")

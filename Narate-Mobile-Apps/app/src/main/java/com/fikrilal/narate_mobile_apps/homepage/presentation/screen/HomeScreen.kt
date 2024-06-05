@@ -11,14 +11,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -29,7 +27,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.fikrilal.narate_mobile_apps.R
+import androidx.paging.compose.items
 import com.fikrilal.narate_mobile_apps._core.presentation.component.appBar.CustomAppBarWithLogo
 import com.fikrilal.narate_mobile_apps._core.presentation.theme.BrandColors
 import com.fikrilal.narate_mobile_apps.auth.presentation.component.CardStoryComponent
@@ -40,7 +40,9 @@ fun HomeScreen(
     navController: NavController,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val stories = viewModel.stories.collectAsState().value
+    val stories = viewModel.allStories.collectAsLazyPagingItems()
+
+//    val stories = viewModel.stories.collectAsState().value
     val scope = rememberCoroutineScope()
     Log.d("HomeScreen", "Displaying stories: $stories")
 
@@ -94,12 +96,12 @@ fun HomeScreen(
         ) {
             items(stories) { story ->
                 CardStoryComponent(
-                    name = story.name,
-                    date = story.createdAt,
-                    description = story.description,
-                    imageUrl = story.photoUrl,
+                    name = story?.name ?: "",
+                    date = story?.createdAt ?: "",
+                    description = story?.description ?: "",
+                    imageUrl = story?.photoUrl ?: "",
                     onCardClick = {
-                        navController.navigate("storyDetailsScreen/${story.id}")
+                        story?.id?.let { navController.navigate("storyDetailsScreen/$it") }
                     }
                 )
             }
