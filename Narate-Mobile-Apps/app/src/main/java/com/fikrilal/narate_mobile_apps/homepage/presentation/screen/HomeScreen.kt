@@ -52,9 +52,13 @@ fun HomeScreen(
     Scaffold(
         containerColor = Color.White,
         topBar = {
-            CustomAppBarWithLogo(onClick = {
-                navController.navigate("settingScreen")
-            })
+            CustomAppBarWithLogo(
+                onClickSettings = {
+                    navController.navigate("settingScreen")
+                },
+                onClickMaps = {
+                    navController.navigate("mapsScreen")
+                })
         },
         floatingActionButton = {
             FloatingActionButton(

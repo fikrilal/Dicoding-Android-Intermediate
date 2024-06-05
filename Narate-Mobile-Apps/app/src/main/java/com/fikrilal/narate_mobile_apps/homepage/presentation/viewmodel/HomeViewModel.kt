@@ -21,8 +21,19 @@ class HomeViewModel @Inject constructor(
     private val _stories = MutableStateFlow<List<Story>>(emptyList())
     val stories: StateFlow<List<Story>> get() = _stories
 
+    private val _storiesWithLocation = MutableStateFlow<List<Story>>(emptyList())
+    val storiesWithLocation: StateFlow<List<Story>> = _storiesWithLocation
+
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
+    private val _error = MutableStateFlow<String?>(null)
+    val error: StateFlow<String?> = _error
+
+
     init {
         fetchStories()
+        fetchStoriesWithLocation()
     }
 
     private fun fetchStories() {
@@ -33,6 +44,29 @@ class HomeViewModel @Inject constructor(
 //                Log.d("HomeViewModel", "Fetched stories: ${response.listStory}")
             } catch (e: Exception) {
 //                Log.e("HomeViewModel", "Error fetching stories", e)
+            }
+        }
+    }
+
+    private fun fetchStoriesWithLocation() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                // Fetch stories with location parameter set to 1
+                val response = storyRepository.getAllStories(null, null, 1)
+                if (!response.error) {
+                    _storiesWithLocation.value = response.listStory
+                    Log.d("HomeViewModel", "Fetched stories with location: ${response.listStory}")
+                } else {
+                    _error.value = response.message
+                    Log.e("HomeViewModel", "Error fetching stories with location: ${response.message}")
+                }
+            } catch (e: Exception) {
+                _error.value = e.message
+                Log.e("HomeViewModel", "Error in fetching stories with location", e)
+            } finally {
+                _isLoading.value = false
             }
         }
     }

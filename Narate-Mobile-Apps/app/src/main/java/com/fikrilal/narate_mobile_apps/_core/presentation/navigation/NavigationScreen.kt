@@ -4,5 +4,6 @@ enum class NavigationScreen {
     RegisterScreen,
     LoginScreen,
     HomeScreen,
-    StoryDetailsScreen
+    StoryDetailsScreen,
+    MapsViewScreen
 }

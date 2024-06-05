@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -28,7 +29,8 @@ import com.fikrilal.narate_mobile_apps._core.presentation.theme.TextColors
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomAppBarWithLogo(
-    onClick: () -> Unit,
+    onClickSettings: () -> Unit,
+    onClickMaps: () -> Unit,
 ) {
     Box {
         Column(
@@ -44,19 +46,36 @@ fun CustomAppBarWithLogo(
                     )
                 },
                 actions = {
-                    Box(
-                        modifier = Modifier
-                            .padding(12.dp)
-                            .clip(CircleShape)
-                            .border(1.dp, TextColors.grey300, CircleShape)
-                    ) {
-                        IconButton(onClick = onClick) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_setting),
-                                contentDescription = "Logout",
-                                modifier = Modifier.size(24.dp),
-                                tint = TextColors.grey700
-                            )
+                    Row {
+                        Box(
+                            modifier = Modifier
+                                .padding(vertical = 12.dp)
+                                .clip(CircleShape)
+                                .border(1.dp, TextColors.grey300, CircleShape)
+                        ) {
+                            IconButton(onClick = onClickMaps) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_maps),
+                                    contentDescription = "Maps",
+                                    modifier = Modifier.size(24.dp),
+                                    tint = TextColors.grey700
+                                )
+                            }
+                        }
+                        Box(
+                            modifier = Modifier
+                                .padding(12.dp)
+                                .clip(CircleShape)
+                                .border(1.dp, TextColors.grey300, CircleShape)
+                        ) {
+                            IconButton(onClick = onClickSettings) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_setting),
+                                    contentDescription = "Logout",
+                                    modifier = Modifier.size(24.dp),
+                                    tint = TextColors.grey700
+                                )
+                            }
                         }
                     }
                 },
