@@ -1,6 +1,5 @@
 package com.fikrilal.narate_mobile_apps.homepage.presentation.screen
 
-import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -29,7 +28,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.fikrilal.narate_mobile_apps.R
-import androidx.paging.compose.items
 import com.fikrilal.narate_mobile_apps._core.presentation.component.appBar.CustomAppBarWithLogo
 import com.fikrilal.narate_mobile_apps._core.presentation.theme.BrandColors
 import com.fikrilal.narate_mobile_apps.auth.presentation.component.CardStoryComponent
@@ -41,10 +39,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val stories = viewModel.allStories.collectAsLazyPagingItems()
-
-//    val stories = viewModel.stories.collectAsState().value
     val scope = rememberCoroutineScope()
-    Log.d("HomeScreen", "Displaying stories: $stories")
 
     // ANIMASI AGAR FAB MEMBESAR KETIKA DITEKAN
     val interactionSource = remember { MutableInteractionSource() }
@@ -94,16 +89,18 @@ fun HomeScreen(
                 .padding(innerPadding)
                 .padding(WindowInsets.systemBars.asPaddingValues())
         ) {
-            items(stories) { story ->
-                CardStoryComponent(
-                    name = story?.name ?: "",
-                    date = story?.createdAt ?: "",
-                    description = story?.description ?: "",
-                    imageUrl = story?.photoUrl ?: "",
-                    onCardClick = {
-                        story?.id?.let { navController.navigate("storyDetailsScreen/$it") }
-                    }
-                )
+            items(stories.itemCount) { index ->
+                stories[index]?.let { story ->
+                    CardStoryComponent(
+                        name = story.name,
+                        date = story.createdAt,
+                        description = story.description,
+                        imageUrl = story.photoUrl,
+                        onCardClick = {
+                            story.id?.let { navController.navigate("storyDetailsScreen/$it") }
+                        }
+                    )
+                }
             }
         }
     }

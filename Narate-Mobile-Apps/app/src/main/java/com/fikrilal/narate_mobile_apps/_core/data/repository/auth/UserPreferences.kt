@@ -1,7 +1,6 @@
 package com.fikrilal.narate_mobile_apps._core.data.repository.auth
 
 import android.content.Context
-import android.util.Log
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
@@ -57,7 +56,6 @@ class UserPreferences @Inject constructor(private val context: Context) {
 
     suspend fun getUserToken(): String? {
         val token = getUserPreference(USER_TOKEN)
-        Log.d("UserPreferences", "Retrieved token: $token")
         return token
     }
 

@@ -88,11 +88,9 @@ class StoryViewModel @Inject constructor(
         }
     }
 
-    private fun byteArrayToFile(context: Context, imageData: ByteArray, fileName: String): File {
+    fun byteArrayToFile(context: Context, imageData: ByteArray, fileName: String): File {
         val file = File(context.cacheDir, fileName)
         file.writeBytes(imageData)
         return file
     }
-
-
 }

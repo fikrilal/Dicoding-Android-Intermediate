@@ -1,6 +1,5 @@
 package com.fikrilal.narate_mobile_apps._core.data.repository.auth
 
-import android.util.Log
 import com.fikrilal.narate_mobile_apps._core.data.api.ApiServices
 import com.fikrilal.narate_mobile_apps._core.data.model.auth.RegisterResponse
 import com.fikrilal.narate_mobile_apps._core.data.model.auth.ResponseLogin
@@ -28,7 +27,6 @@ class AuthRepository @Inject constructor(
                 val name = it.name ?: throw Exception("Login failed: Missing name")
 
                 userPreferences.saveUserDetails(token, userId, name)
-                Log.d("AuthRepository", "Token saved: $token")
                 return response.body() ?: throw Exception("Login failed, body is null")
             } ?: throw Exception("Login failed: No login result available")
         } else {

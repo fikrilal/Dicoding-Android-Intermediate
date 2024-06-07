@@ -70,6 +70,8 @@ dependencies {
     implementation(libs.androidx.room.common)
     implementation(libs.androidx.media3.common)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.paging.runtime.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -88,8 +90,14 @@ dependencies {
     implementation (libs.ui)
     implementation (libs.ui.tooling)
     implementation (libs.androidx.material)
-    implementation ("androidx.paging:paging-compose:1.0.0-alpha14")
-
+    implementation ("androidx.paging:paging-compose:3.3.0")
+    testImplementation ("junit:junit:4.13.2")
+    testImplementation ("io.mockk:mockk:1.12.0")
+    testImplementation (libs.kotlinx.coroutines.test)
+    testImplementation ("androidx.arch.core:core-testing:2.1.0")
+    testImplementation ("androidx.paging:paging-common:3.1.0")
+    testImplementation ("org.mockito:mockito-inline:3.4.0")
+    testImplementation("app.cash.turbine:turbine:1.1.0")
 }
 kapt {
     correctErrorTypes = true
