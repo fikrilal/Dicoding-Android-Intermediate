@@ -8,7 +8,9 @@ plugins {
 android {
     namespace = "com.fikrilal.narate_mobile_apps"
     compileSdk = 34
-
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+    }
     defaultConfig {
         buildConfigField("String","API_URL","\"https://story-api.dicoding.dev/v1/\"")
         applicationId = "com.fikrilal.narate_mobile_apps"
@@ -98,6 +100,7 @@ dependencies {
     testImplementation ("androidx.paging:paging-common:3.1.0")
     testImplementation ("org.mockito:mockito-inline:3.4.0")
     testImplementation("app.cash.turbine:turbine:1.1.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0-RC")
 }
 kapt {
     correctErrorTypes = true
