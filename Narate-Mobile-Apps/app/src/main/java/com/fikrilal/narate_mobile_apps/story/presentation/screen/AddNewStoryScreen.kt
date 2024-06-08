@@ -228,7 +228,9 @@ fun AddNewStory(
     LaunchedEffect(uploadResult) {
         uploadResult?.let { result ->
             result.onSuccess {
-                navController.navigate("HomeScreen")
+                navController.navigate("HomeScreen") {
+                    popUpTo("HomeScreen") { inclusive = true }
+                }
                 Toast.makeText(context, "Berhasil mengunggah cerita", Toast.LENGTH_LONG).show()
             }.onFailure {
                 Toast.makeText(context, "Gagal mengunggah cerita: ${it.message}", Toast.LENGTH_LONG)

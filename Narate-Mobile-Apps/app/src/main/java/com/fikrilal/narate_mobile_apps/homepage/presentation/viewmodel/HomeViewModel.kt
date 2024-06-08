@@ -1,5 +1,6 @@
 package com.fikrilal.narate_mobile_apps.homepage.presentation.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fikrilal.narate_mobile_apps._core.data.model.stories.Story
@@ -31,12 +32,18 @@ class HomeViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val apiServices: ApiServices,
     val userPreferences: UserPreferences,
+    private val savedStateHandle: SavedStateHandle,
     private val differWrapper: DifferWrapper<Story>
 ) : ViewModel() {
-
+    private var scrollPosition: Pair<Int, Int>? = savedStateHandle["scrollPosition"]
     private val _pagingData = MutableSharedFlow<PagingData<Story>>(replay = 1)
     val pagingData: Flow<PagingData<Story>> = _pagingData.asSharedFlow()
+    fun saveScrollPosition(position: Pair<Int, Int>) {
+        scrollPosition = position
+        savedStateHandle["scrollPosition"] = position
+    }
 
+    fun getScrollPosition() = scrollPosition
     init {
         viewModelScope.launch {
             userPreferences.userToken.filterNotNull().collect { token ->
@@ -79,28 +86,28 @@ class HomeViewModel @Inject constructor(
     val error: StateFlow<String?> = _error
 
 
-//    init {
-//        fetchStoriesWithLocation()
-//    }
-//
-//    private fun fetchStoriesWithLocation() {
-//        viewModelScope.launch {
-//            _isLoading.value = true
-//            _error.value = null
-//            try {
-//                val response = storyRepository.getAllStories(null, null, 1)
-//                if (!response.error) {
-//                    _storiesWithLocation.value = response.listStory
-//                } else {
-//                    _error.value = response.message
-//                }
-//            } catch (e: Exception) {
-//                _error.value = e.message
-//            } finally {
-//                _isLoading.value = false
-//            }
-//        }
-//    }
+    init {
+        fetchStoriesWithLocation()
+    }
+
+    private fun fetchStoriesWithLocation() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                val response = storyRepository.getAllStories(null, null, 1)
+                if (!response.error) {
+                    _storiesWithLocation.value = response.listStory
+                } else {
+                    _error.value = response.message
+                }
+            } catch (e: Exception) {
+                _error.value = e.message
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
 
     fun logout() {
         viewModelScope.launch {

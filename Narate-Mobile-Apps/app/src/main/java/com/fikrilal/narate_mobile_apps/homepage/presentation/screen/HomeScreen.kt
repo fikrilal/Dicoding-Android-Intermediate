@@ -10,12 +10,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -41,11 +44,21 @@ fun HomeScreen(
     val stories = viewModel.allStories.collectAsLazyPagingItems()
     val scope = rememberCoroutineScope()
 
-    // ANIMASI AGAR FAB MEMBESAR KETIKA DITEKAN
+    val listState = rememberLazyListState()
+
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(if (isPressed) 1.2f else 1f)
-
+    LaunchedEffect(Unit) {
+        viewModel.getScrollPosition()?.let { (index, offset) ->
+            listState.scrollToItem(index, offset)
+        }
+    }
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.saveScrollPosition(listState.firstVisibleItemIndex to listState.firstVisibleItemScrollOffset)
+        }
+    }
     Scaffold(
         containerColor = Color.White,
         topBar = {
@@ -84,6 +97,7 @@ fun HomeScreen(
         }
     ) { innerPadding ->
         LazyColumn(
+            state = listState,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)

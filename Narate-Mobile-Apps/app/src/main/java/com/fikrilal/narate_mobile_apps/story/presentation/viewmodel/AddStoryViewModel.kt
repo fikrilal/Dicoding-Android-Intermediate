@@ -28,8 +28,8 @@ class StoryViewModel @Inject constructor(
     private val _text = MutableLiveData<String>()
     val text: LiveData<String> = _text
 
-    private val _uploadResult = MutableLiveData<Result<StoryDetailResponse>>()
-    val uploadResult: LiveData<Result<StoryDetailResponse>> = _uploadResult
+    private val _uploadResult = MutableLiveData<Result<StoryDetailResponse?>?>()
+    val uploadResult: LiveData<Result<StoryDetailResponse?>?> = _uploadResult
 
     private val _isLoading = MutableLiveData<Boolean>(false)
     val isLoading: LiveData<Boolean> = _isLoading
@@ -41,6 +41,10 @@ class StoryViewModel @Inject constructor(
     fun setText(input: String) {
         _text.value = input
     }
+
+//    fun resetUploadResult() {
+//        _uploadResult.value = null
+//    }
 
     private fun uriToFile(uri: Uri, context: Context): File {
         val inputStream = context.contentResolver.openInputStream(uri)

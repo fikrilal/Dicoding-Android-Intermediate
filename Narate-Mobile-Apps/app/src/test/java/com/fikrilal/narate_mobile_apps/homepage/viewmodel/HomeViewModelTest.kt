@@ -128,12 +128,44 @@ class HomeViewModelTest {
         collectJob.cancel()
     }
 
+    @Test
+    fun whenNoStoryData_EnsureNoItemsReturned() = runTest(testDispatcher) {
+        val emptyStories = emptyList<Story>()
+        coEvery { apiServices.getAllStories(any(), any(), any(), any()) } returns Response.success(
+            StoriesResponse(false, "No stories found", emptyStories)
+        )
+
+        coEvery { differWrapper.submitData(any()) } just Runs
+
+        val collectJob = launch {
+            viewModel.allStories.test {
+                val receivedPagingData = awaitItem()
+                println("Received PagingData: $receivedPagingData")
+
+                val differ = AsyncPagingDataDiffer(
+                    diffCallback = object : androidx.recyclerview.widget.DiffUtil.ItemCallback<Story>() {
+                        override fun areItemsTheSame(oldItem: Story, newItem: Story): Boolean = oldItem.id == newItem.id
+                        override fun areContentsTheSame(oldItem: Story, newItem: Story): Boolean = oldItem == newItem
+                    },
+                    updateCallback = noopListUpdateCallback,
+                    workerDispatcher = testDispatcher
+                )
+
+                differ.submitData(receivedPagingData)
+
+                assertEquals("Expected number of items should be zero", 0, differ.snapshot().size)
+            }
+        }
+        advanceUntilIdle()
+        collectJob.cancel()
+    }
+
+
     @After
     fun tearDown() {
         viewModel.viewModelScope.cancel()
         Dispatchers.resetMain()
     }
-
     private val noopListUpdateCallback = object : ListUpdateCallback {
         override fun onInserted(position: Int, count: Int) {}
         override fun onRemoved(position: Int, count: Int) {}
