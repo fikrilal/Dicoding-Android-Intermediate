@@ -3,6 +3,7 @@ package com.fikrilal.narate_mobile_apps.story.presentation.screen
 import android.Manifest
 import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -102,6 +103,12 @@ fun AddNewStory(
             tempImageUri?.let { uri ->
                 takePictureLauncher.launch(uri)
             }
+        }
+    }
+
+    BackHandler(enabled = true) {
+        navController.navigate("homeScreen") {
+            popUpTo("homeScreen") { inclusive = true }
         }
     }
 
@@ -228,14 +235,21 @@ fun AddNewStory(
     LaunchedEffect(uploadResult) {
         uploadResult?.let { result ->
             result.onSuccess {
-                navController.navigate("HomeScreen") {
-                    popUpTo("HomeScreen") { inclusive = true }
+                // Clear the input data
+                viewModel.resetInputData()
+                // Navigate to HomeScreen and clear back stack up to HomeScreen
+                navController.navigate("homeScreen") {
+                    popUpTo("homeScreen") {
+                        inclusive = true
+                    }
                 }
                 Toast.makeText(context, "Berhasil mengunggah cerita", Toast.LENGTH_LONG).show()
             }.onFailure {
-                Toast.makeText(context, "Gagal mengunggah cerita: ${it.message}", Toast.LENGTH_LONG)
-                    .show()
+                Toast.makeText(context, "Gagal mengunggah cerita: ${it.message}", Toast.LENGTH_LONG).show()
             }
+            // Reset upload result to prevent repeated actions
+            viewModel.resetUploadResult()
         }
     }
+
 }

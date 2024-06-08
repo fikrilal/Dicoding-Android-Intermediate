@@ -1,5 +1,6 @@
 package com.fikrilal.narate_mobile_apps.homepage.presentation.screen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -59,6 +60,15 @@ fun HomeScreen(
             viewModel.saveScrollPosition(listState.firstVisibleItemIndex to listState.firstVisibleItemScrollOffset)
         }
     }
+
+    BackHandler {
+        if (navController.previousBackStackEntry == null) {
+            android.os.Process.killProcess(android.os.Process.myPid())
+        } else {
+            navController.navigateUp()
+        }
+    }
+
     Scaffold(
         containerColor = Color.White,
         topBar = {

@@ -42,9 +42,15 @@ class StoryViewModel @Inject constructor(
         _text.value = input
     }
 
-//    fun resetUploadResult() {
-//        _uploadResult.value = null
-//    }
+    fun resetUploadResult() {
+        _uploadResult.value = null
+    }
+
+    fun resetInputData() {
+        _imageUri.value = null
+        _text.value = ""
+    }
+
 
     private fun uriToFile(uri: Uri, context: Context): File {
         val inputStream = context.contentResolver.openInputStream(uri)

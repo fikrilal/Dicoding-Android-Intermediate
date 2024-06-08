@@ -1,6 +1,7 @@
 package com.fikrilal.narate_mobile_apps.homepage.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.AsyncPagingDataDiffer
 import androidx.paging.PagingData
@@ -45,6 +46,7 @@ class HomeViewModelTest {
     private lateinit var authRepository: AuthRepository
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var differWrapper: DifferWrapper<Story>
+    private lateinit var savedStateHandle: SavedStateHandle
 
     @Before
     fun setUp() {
@@ -57,6 +59,9 @@ class HomeViewModelTest {
         userPreferences = mockk(relaxed = true)
         authRepository = mockk(relaxed = true)
         differWrapper = mockk(relaxed = true)
+
+        savedStateHandle = mockk(relaxed = true)
+        every { savedStateHandle.get<Pair<Int, Int>?>("scrollPosition") } returns Pair(0, 0)
 
         coEvery { userPreferences.userToken } returns flowOf("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLUllVzdjRldFUktuS0JVWVIiLCJpYXQiOjE3MTc1NTUwMTB9.4ccR_v-mgPAB3yKM4akhm-eVCv-xCbiZ59_atM1nOjM")
         coEvery {
@@ -90,6 +95,7 @@ class HomeViewModelTest {
             authRepository,
             apiServices,
             userPreferences,
+            savedStateHandle,
             differWrapper
         )
     }
@@ -97,7 +103,15 @@ class HomeViewModelTest {
     @Test
     fun allStoriesSuccessfullyLoaded() = runTest(testDispatcher) {
         val expectedStories = listOf(
-            Story("2022-01-01T00:00:00Z", "Lorem Ipsum", "story-FvU4u0Vp2S3PMsFg", -10.212, -16.002, "Dimas", "https://story-url")
+            Story(
+                "2022-01-01T00:00:00Z",
+                "Lorem Ipsum",
+                "story-FvU4u0Vp2S3PMsFg",
+                -10.212,
+                -16.002,
+                "Dimas",
+                "https://story-url"
+            )
         )
         val pagingData = PagingData.from(expectedStories)
 
@@ -110,9 +124,13 @@ class HomeViewModelTest {
         val collectJob = launch {
             viewModel.allStories.collect { receivedPagingData ->
                 val differ = AsyncPagingDataDiffer(
-                    diffCallback = object : androidx.recyclerview.widget.DiffUtil.ItemCallback<Story>() {
-                        override fun areItemsTheSame(oldItem: Story, newItem: Story): Boolean = oldItem.id == newItem.id
-                        override fun areContentsTheSame(oldItem: Story, newItem: Story): Boolean = oldItem == newItem
+                    diffCallback = object :
+                        androidx.recyclerview.widget.DiffUtil.ItemCallback<Story>() {
+                        override fun areItemsTheSame(oldItem: Story, newItem: Story): Boolean =
+                            oldItem.id == newItem.id
+
+                        override fun areContentsTheSame(oldItem: Story, newItem: Story): Boolean =
+                            oldItem == newItem
                     },
                     updateCallback = noopListUpdateCallback,
                     workerDispatcher = testDispatcher
@@ -120,8 +138,16 @@ class HomeViewModelTest {
                 differ.submitData(receivedPagingData)
                 assertNotNull("Received data should not be null", receivedPagingData)
                 advanceUntilIdle()
-                assertEquals("Expected number of items did not match", expectedStories.size, differ.snapshot().size)
-                assertEquals("Expected first item's name did not match", "Dimas", differ.snapshot().items[0].name)
+                assertEquals(
+                    "Expected number of items did not match",
+                    expectedStories.size,
+                    differ.snapshot().size
+                )
+                assertEquals(
+                    "Expected first item's name did not match",
+                    "Dimas",
+                    differ.snapshot().items[0].name
+                )
             }
         }
         advanceUntilIdle()
@@ -143,9 +169,13 @@ class HomeViewModelTest {
                 println("Received PagingData: $receivedPagingData")
 
                 val differ = AsyncPagingDataDiffer(
-                    diffCallback = object : androidx.recyclerview.widget.DiffUtil.ItemCallback<Story>() {
-                        override fun areItemsTheSame(oldItem: Story, newItem: Story): Boolean = oldItem.id == newItem.id
-                        override fun areContentsTheSame(oldItem: Story, newItem: Story): Boolean = oldItem == newItem
+                    diffCallback = object :
+                        androidx.recyclerview.widget.DiffUtil.ItemCallback<Story>() {
+                        override fun areItemsTheSame(oldItem: Story, newItem: Story): Boolean =
+                            oldItem.id == newItem.id
+
+                        override fun areContentsTheSame(oldItem: Story, newItem: Story): Boolean =
+                            oldItem == newItem
                     },
                     updateCallback = noopListUpdateCallback,
                     workerDispatcher = testDispatcher
@@ -166,6 +196,7 @@ class HomeViewModelTest {
         viewModel.viewModelScope.cancel()
         Dispatchers.resetMain()
     }
+
     private val noopListUpdateCallback = object : ListUpdateCallback {
         override fun onInserted(position: Int, count: Int) {}
         override fun onRemoved(position: Int, count: Int) {}
