@@ -62,7 +62,6 @@ class HomeViewModelTest {
 
     @Before
     fun setUp() {
-        println("Setting up test environment")
         mockkStatic(Log::class)
         every { Log.d(any(), any()) } returns 0
         every { Log.e(any(), any(), any()) } returns 0
@@ -77,30 +76,6 @@ class HomeViewModelTest {
         every { savedStateHandle.get<Pair<Int, Int>?>("scrollPosition") } returns Pair(0, 0)
 
         coEvery { userPreferences.userToken } returns flowOf("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLUllVzdjRldFUktuS0JVWVIiLCJpYXQiOjE3MTc1NTUwMTB9.4ccR_v-mgPAB3yKM4akhm-eVCv-xCbiZ59_atM1nOjM")
-        coEvery {
-            apiServices.getAllStories(
-                any(),
-                any(),
-                any(),
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLUllVzdjRldFUktuS0JVWVIiLCJpYXQiOjE3MTc1NTUwMTB9.4ccR_v-mgPAB3yKM4akhm-eVCv-xCbiZ59_atM1nOjM"
-            )
-        } returns Response.success(
-            StoriesResponse(
-                false,
-                "Success",
-                listOf(
-                    Story(
-                        "2022-01-01T00:00:00Z",
-                        "Lorem Ipsum",
-                        "story-FvU4u0Vp2S3PMsFg",
-                        -10.212,
-                        -16.002,
-                        "Dimas",
-                        "https://story-api.dicoding.dev/images/stories/photos-1641623658595_dummy-pic.png"
-                    )
-                )
-            )
-        )
 
         val storyRepository = StoryRepository(apiServices, userPreferences)
         viewModel = HomeViewModel(
@@ -111,12 +86,10 @@ class HomeViewModelTest {
             savedStateHandle,
             differWrapper
         )
-        println("Setup complete")
     }
 
     object DataDummy {
         fun generateDummyStories(): List<Story> {
-            println("Generating dummy stories")
             return List(20) { i ->
                 Story(
                     createdAt = "2022-01-01T00:00:00Z",
@@ -147,19 +120,10 @@ class HomeViewModelTest {
 
     @Test
     fun allStoriesSuccessfullyLoaded() = runTest {
-        println("Running allStoriesSuccessfullyLoaded test")
         val expectedStories = DataDummy.generateDummyStories()
-        val fakePagingSource = FakePagingSource(expectedStories)
-
-        val pager = Pager(
-            config = PagingConfig(pageSize = 20),
-            pagingSourceFactory = { fakePagingSource }
-        )
-
         coEvery { apiServices.getAllStories(any(), any(), any(), any()) } returns Response.success(
             StoriesResponse(false, "Success", expectedStories)
         )
-        coEvery { differWrapper.submitData(any()) } just Runs
 
         val differ = AsyncPagingDataDiffer(
             diffCallback = object :
@@ -175,25 +139,16 @@ class HomeViewModelTest {
         )
 
         val collectJob = launch {
-            println("Collecting allStories flow")
-            pager.flow.collectLatest { receivedPagingData ->
-                println("Received PagingData: $receivedPagingData")
-                println("Submitting data to differ")
+            viewModel.allStories.collectLatest { receivedPagingData ->
                 differ.submitData(receivedPagingData)
-                println("Data submitted to differ")
             }
         }
 
         delay(1000)
-
-        println("Creating snapshot")
         val snapshot = differ.snapshot()
-        println("Snapshot: $snapshot")
 
-        println("Checking snapshot is not null")
         assertNotNull("Received data should not be null", snapshot)
 
-        println("Checking snapshot size matches expected size")
         assertEquals(
             "Expected number of items did not match",
             expectedStories.size,
@@ -201,38 +156,26 @@ class HomeViewModelTest {
         )
 
         if (snapshot.isNotEmpty()) {
-            println("Checking first item in snapshot matches expected first item")
             val firstItem = snapshot.items[0]
-            println("First item: $firstItem")
             assertEquals(
                 "Expected first item's name did not match",
                 expectedStories[0],
                 firstItem
             )
         } else {
-            println("Snapshot is empty, cannot check first item")
             fail("Snapshot is empty, cannot check first item")
         }
 
         collectJob.cancelAndJoin()
-        println("Finished allStoriesSuccessfullyLoaded test")
     }
 
     @Test
     fun whenNoStoryData_EnsureNoItemsReturned() = runTest {
-        println("Running whenNoStoryData_EnsureNoItemsReturned test")
         val emptyStories = emptyList<Story>()
-        val fakePagingSource = FakePagingSource(emptyStories)
-
-        val pager = Pager(
-            config = PagingConfig(pageSize = 20),
-            pagingSourceFactory = { fakePagingSource }
-        )
 
         coEvery { apiServices.getAllStories(any(), any(), any(), any()) } returns Response.success(
             StoriesResponse(false, "No stories found", emptyStories)
         )
-        coEvery { differWrapper.submitData(any()) } just Runs
 
         val differ = AsyncPagingDataDiffer(
             diffCallback = object :
@@ -248,51 +191,33 @@ class HomeViewModelTest {
         )
 
         val collectJob = launch {
-            println("Collecting allStories flow")
-            pager.flow.collectLatest { receivedPagingData ->
-                println("Received PagingData: $receivedPagingData")
-                println("Submitting data to differ")
+            viewModel.allStories.collectLatest { receivedPagingData ->
                 differ.submitData(receivedPagingData)
-                println("Data submitted to differ")
             }
         }
-
         delay(1000)
-
-        println("Creating snapshot")
         val snapshot = differ.snapshot()
-        println("Snapshot: $snapshot")
-
-        println("Checking snapshot size is zero")
         assertEquals("Expected number of items should be zero", 0, snapshot.size)
-
         collectJob.cancelAndJoin()
-        println("Finished whenNoStoryData_EnsureNoItemsReturned test")
     }
 
     @After
     fun tearDown() {
-        println("Tearing down test environment")
         viewModel.viewModelScope.cancel()
         Dispatchers.resetMain()
-        println("Teardown complete")
     }
 
     private val noopListUpdateCallback = object : ListUpdateCallback {
         override fun onInserted(position: Int, count: Int) {
-            println("Inserted $count items at position $position")
         }
 
         override fun onRemoved(position: Int, count: Int) {
-            println("Removed $count items from position $position")
         }
 
         override fun onMoved(fromPosition: Int, toPosition: Int) {
-            println("Moved item from position $fromPosition to $toPosition")
         }
 
         override fun onChanged(position: Int, count: Int, payload: Any?) {
-            println("Changed $count items at position $position with payload $payload")
         }
     }
 }

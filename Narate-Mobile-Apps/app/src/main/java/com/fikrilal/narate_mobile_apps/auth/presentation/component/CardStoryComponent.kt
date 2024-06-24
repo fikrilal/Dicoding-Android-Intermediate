@@ -60,7 +60,7 @@ fun CardStoryComponent(
                 }
             }
             Spacer(modifier = Modifier.height(12.dp))
-            BodyLarge(text = description)
+            BodyLarge(text = description, color = TextColors.grey600)
             Spacer(modifier = Modifier.height(12.dp))
             Image(
                 painter = rememberAsyncImagePainter(imageUrl),

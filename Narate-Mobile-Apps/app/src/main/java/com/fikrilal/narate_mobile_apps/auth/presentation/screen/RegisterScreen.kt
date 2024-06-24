@@ -98,10 +98,10 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
                 Modifier.size(height = 32.dp, width = 120.dp)
             )
             Spacer(modifier = Modifier.heightIn(24.dp))
-            HeadingLarge(text = "Masuk Ke Akun Kamu")
+            HeadingLarge(text = "Buat Akun Baru")
             Spacer(modifier = Modifier.heightIn(4.dp))
             BodyLarge(
-                text = "Masuk untuk mengakses seluruh fitur narrate.",
+                text = "Daftar untuk mengakses seluruh fitur narrate.",
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start,
                 color = TextColors.grey600
@@ -178,7 +178,7 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 BodyMedium(
-                    text = "Belum punya Akun?",
+                    text = "Sudah punya Akun?",
                     color = TextColors.grey500,
                     textAlign = TextAlign.Center
                 )
